@@ -15,9 +15,9 @@
     
 
     
-    <meta name="title" content="Istio" />
-    <meta property="og:title" content="Istio" />
-    <meta property="twitter:title" content="Istio" />
+    <meta name="title" content="计算机基础前置知识" />
+    <meta property="og:title" content="计算机基础前置知识" />
+    <meta property="twitter:title" content="计算机基础前置知识" />
     
 
     
@@ -34,9 +34,9 @@
     <meta name="keyword"  content="iigeoywq, 博客, 个人网站, 图形学, GIS, 座舱, 车载, Andorid, 系统">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>Istio | </title>
+    <title>计算机基础前置知识 | </title>
 
-    <link rel="canonical" href="/tags/istio/">
+    <link rel="canonical" href="/2022/12/07/">
 
     
     
@@ -155,14 +155,41 @@
 
 
 
-<header class="intro-header" style="background-image: url('/img/home-bg-jeep.jpg')">
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/home-bg-jeep.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
-                <div class="site-heading">
-                    <h1>FQ Blog </h1>
-                    
-		    <span class="subheading"></span>
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/istio" title="Istio">
+                            Istio
+                        </a>
+                        
+                    </div>
+                    <h1>计算机基础前置知识</h1>
+                    <h2 class="subheading">计算机体系</h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                    &#34;iigeoywq&#34;
+                             
+                            on 
+                            Wednesday, December 7, 2022
+                            
+                            
+                            
+                            
+                    </span>
                 </div>
             </div>
         </div>
@@ -171,182 +198,203 @@
 
 
 
-  
-<div data-pagefind-ignore="all" class="container">
-    <div class="row">
-        
-        
-   	    <div class="
-            col-lg-8 col-lg-offset-1
-            col-md-8 col-md-offset-1
-            col-sm-12
-            col-xs-12
-            post-container
-        ">
-            
-<div data-pagefind-ignore="all">
 
-<div class="post-preview">
-    <a href="https://ywqyunshan.github.io/2022/12/07/">
-        <h2 class="post-title">
-            计算机基础前置知识
-        </h2>
-	
-        <h3 class="post-subtitle">
-            计算机体系
-        </h3>
-	
-        <div class="post-content-preview">
-	
-            <blockquote>
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <blockquote>
 <p>任何问题都会有一个前置条件，为了进一步学习操作系统，梳理一下计算机系统学习的前置知识，本文记录<a href="https://www.bilibili.com/video/BV1EW411u7th/?p=1&amp;share_medium=iphone&amp;share_plat=ios&amp;share_source=COPY&amp;share_tag=s_i&amp;timestamp=1626958909&amp;unique_k=a33Kwq">【计算机科学速成课】[40集全/精校] - Crash Course Computer Science</a>学习笔记。</p>
 </blockquote>
-       
-        </div>
-    </a>
-    <p class="post-meta">
+<h2 id="计算机体系架构抽象">计算机体系架构抽象</h2>
+<p>todo 待整理</p>
+<h2 id="电子计算机发展">电子计算机发展</h2>
+<ul>
+<li>继电器：电子控制机械开关，缺点：计算速度慢，机械件磨损，故障概率高；</li>
+<li>真空管
+二极管：电流只能单向流动的电子部件；
+三极管：再二极管的基础上增加控制电极，实现电子流动控制；
+缺点：玻璃外壳易碎，价格昂贵；</li>
+<li>晶体管：用半导体材料控制电流的流动；</li>
+</ul>
+<p>继电器&ndash;&gt;真空管&ndash;&gt;晶体管 控制电路开闭速度越来越快</p>
+<h2 id="数学表达和逻辑门">数学表达和逻辑门</h2>
+<ul>
+<li>二进制表达：1.只有2种状态，防止信号干扰；2.有现成的数学分支-布尔代数，通过ture和fasle解决了所有的法则和运算；</li>
+<li>逻辑门：AND/NOT/OR&mdash;&gt;XOR
+  <img src="/img/%e9%80%bb%e8%be%91%e9%97%a8_XOR.jpg" alt="XOR">
+
+</li>
+<li>数字表示：正数/负数/整数/浮点数</li>
+<li>字符表示：ASCII</li>
+<li>字符编码标准：Unicode，解决ASCII不够表达所有语言的问题</li>
+</ul>
+<h2 id="存储--内存">存储&ndash;内存</h2>
+<ul>
+<li>锁存器：用逻辑门组装一个存1位的电路；
+
+  <img src="/img/%e9%94%81%e5%ad%98%e5%99%a8.jpg" alt="锁存器">
+
+</li>
+<li>门锁：带有开关的锁存器；</li>
+<li>8位寄存器：存储一个数字
+1.用8个锁存器组装实现，缺点：线束太多；
+
+  <img src="/img/8%e4%bd%8d%e5%af%84%e5%ad%98%e5%99%a8.jpg" alt="寄存器">
+
+
+2.门锁矩阵，例如16*16矩阵，256个锁存器组装；</li>
+</ul>
+<p>
+  <img src="/img/%e9%97%a8%e9%94%81%e7%9f%a9%e9%98%b5.jpg" alt="锁存器">
+
+</p>
+<ul>
+<li>RAM
+用上述8个16*16门锁矩阵组装的内存，可以存储256个字节；
+
+  <img src="/img/RAM%e5%ae%9e%e7%8e%b0.jpg" alt="RAM实现">
+
+</li>
+</ul>
+<h2 id="计算--cpu">计算&ndash;CPU</h2>
+<h4 id="alu">ALU</h4>
+<ul>
+<li>算数单元</li>
+</ul>
+<ol>
+<li>半加器：处理 1 bit的逻辑门电路；
+
+  <img src="/img/%E5%8D%8A%E5%8A%A0%E5%99%A8.jpg" alt="半加器">
+
+</li>
+<li>全加器：处理 1 bit的逻辑门电路；
+
+  <img src="/img/%E5%85%A8%E5%8A%A0%E5%99%A8.jpg" alt="全加器">
+
+</li>
+<li>8位加法运算：1个半加器和7个全加器的电路；</li>
+</ol>
+<ul>
+<li>逻辑单元
+1.检测数字是否为0电路；
+
+  <img src="/img/%E9%80%BB%E8%BE%91%E5%88%A4%E6%96%ADTrue.jpg" alt="逻辑判断">
+
+
+2.Flag标志；</li>
+</ul>
+
+                
+                
+<div class="entry-shang text-center">
     
-        Posted by     &#34;iigeoywq&#34; on Wednesday, December 7, 2022
-        
-        
-    
-    </p>
-
-</div>
-<hr>
-
-</div>
-
-            
-
-
-
-       	</div>
-        
-
-<div class="
-    col-lg-3 col-lg-offset-0
-    col-md-3 col-md-offset-0
-    col-sm-12
-    col-xs-12
-    sidebar-container
-">
-    
+	    <p>「真诚赞赏，手留余香」</p>
 	
-    <section class="visible-md visible-lg">
-	
-        <div class="short-about">
-            
-            <a href="/about">
-               <img src="/img/logo.png" alt="avatar" style="cursor: pointer" />
-            </a>
-            
-            
-                <p>Software Developer</p>
-            
-           
-           <ul class="list-inline">
-               
-               <li>
-                   <a href="mailto:youremail@gmail.com">
-                      <span class="fa-stack fa-lg">
-                          <i class="fa fa-circle fa-stack-2x"></i>
-                          <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
-                      </span>
-                   </a>
-               </li>
-               
-               
-               
-               
-               
-               
-               <li>
-                   <a target="_blank" href="/your%20wechat%20qr%20code%20image">
-                       <span class="fa-stack fa-lg">
-                           <i class="fas fa-circle fa-stack-2x"></i>
-                           <i class="fab fa-weixin fa-stack-1x fa-inverse"></i>
-                       </span>
-                   </a>
-               </li>
-               
-               
-               <li>
-                   <a target="_blank" href="https://github.com/yourgithub">
-                       <span class="fa-stack fa-lg">
-                           <i class="fas fa-circle fa-stack-2x"></i>
-                           <i class="fab fa-github fa-stack-1x fa-inverse"></i>
-                       </span>
-                   </a>
-               </li>
-               
-               
-               
-               
-               <li>
-                   <a target="_blank" href="https://www.linkedin.com/in/yourlinkedinid">
-                       <span class="fa-stack fa-lg">
-                           <i class="fas fa-circle fa-stack-2x"></i>
-                           <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
-                       </span>
-                   </a>
-               </li>
-               
-               
-               
-                    <li>
-                        <a target="_blank" href="https://stackoverflow.com/users/yourstackoverflowid">
-                            <span class="fa-stack fa-lg">
-                                <i class="fas fa-circle fa-stack-2x"></i>
-                                <i class="fab fa-stack-overflow fa-stack-1x fa-inverse"></i>
-                            </span>
-                        </a>
-                    </li>
-            
-            
-            
-               
-               
-               
-               
-                </ul>
-            </div>
-    </section>
-	
-    
-    
-    
-    
-    <section>
-        <hr class="hidden-sm hidden-xs">
-        <h5>FEATURED TAGS</h5>
-        <div class="tags">
-            
-            
-               
-            
-        </div>
-    </section>
-    
-
-    
-    
-    <section>
-        <hr class="hidden-sm hidden-xs">
-        <h5>FRIENDS</h5>
-        <ul class="list-inline">
-            
-            <li><a target="_blank" href="https://www.jianshu.com/u/e9dc7e422257">iigeoywq的博客</a></li>
-            
-        </ul>
-    </section>
-    
-    
+	<button class="zs show-zs btn btn-bred">赞赏支持</button>
 </div>
-
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+	<div class="zs-modal-head">
+		<button type="button" class="close">×</button>
+		<span class="author"><a href="https://ywqyunshan.github.io/"><img src="/img/favicon.png" />FQ Blog</a></span>
+        
+	        <p class="tip"><i></i><span>真诚赞赏，手留余香</span></p>
+		
+ 
+	</div>
+	<div class="zs-modal-body">
+		<div class="zs-modal-btns">
+			<button class="btn btn-blink" data-num="2">2元</button>
+			<button class="btn btn-blink" data-num="5">5元</button>
+			<button class="btn btn-blink" data-num="10">10元</button>
+			<button class="btn btn-blink" data-num="50">50元</button>
+			<button class="btn btn-blink" data-num="100">100元</button>
+			<button class="btn btn-blink" data-num="1">任意金额</button>
+		</div>
+		<div class="zs-modal-pay">
+			<button class="btn btn-bred" id="pay-text">2元</button>
+			<p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+			<img src="/img/reward/wechat-2.png"  id="pay-image"/>
+		</div>
+	</div>
+	<div class="zs-modal-footer">
+		<label><input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked"><span ><span class="zs-wechat"><img src="/img/reward/wechat-btn.png"/></span></label>
+		<label><input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay"><img src="/img/reward/alipay-btn.png"/></span></label>
 	</div>
 </div>
+<script type="text/javascript" src="/js/reward.js"></script>
 
+                
+
+                
+
+                
+
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+                <section>
+                    <hr>
+                    <h5>FRIENDS</h5>
+                    <ul class="list-inline">
+                        
+                        <li><a target="_blank" href="https://www.jianshu.com/u/e9dc7e422257">iigeoywq的博客</a></li>
+                        
+                    </ul>
+                </section>
+                
+            </div>
+        </div>
+    </div>
+</article>
 
 
 
@@ -424,7 +472,7 @@
             
            
                    <li>
-                       <a href='/tags/istio/index.xml' rel="alternate" type="application/rss+xml" title="FQ Blog" >
+                       <a href='' rel="alternate" type="application/rss+xml" title="FQ Blog" >
                            <span class="fa-stack fa-lg">
                                <i class="fas fa-circle fa-stack-2x"></i>
                                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
