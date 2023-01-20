@@ -22,5 +22,16 @@
 &lt;/blockquote&gt;</description>
     </item>
     
+    <item>
+      <title>Android显示系统-架构</title>
+      <link>https://ywqyunshan.github.io/2022/01/19/</link>
+      <pubDate>Wed, 19 Jan 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://ywqyunshan.github.io/2022/01/19/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;Android系统源码繁杂，庞大，网上分析文章很多，本文结合Android12 源码和一些优秀的文章整理而成。&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
   </channel>
 </rss>

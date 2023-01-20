@@ -15,9 +15,9 @@
     
 
     
-    <meta name="title" content="" />
-    <meta property="og:title" content="" />
-    <meta property="twitter:title" content="" />
+    <meta name="title" content="Android显示系统-架构" />
+    <meta property="og:title" content="Android显示系统-架构" />
+    <meta property="twitter:title" content="Android显示系统-架构" />
     
 
     
@@ -34,9 +34,9 @@
     <meta name="keyword"  content="iigeoywq, 博客, 个人网站, 图形学, GIS, 座舱, 车载, Andorid, 系统">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title></title>
+    <title>Android显示系统-架构 | </title>
 
-    <link rel="canonical" href="/notes/">
+    <link rel="canonical" href="/2022/01/19/">
 
     
     
@@ -155,14 +155,41 @@
 
 
 
-<header class="intro-header" style="background-image: url('/img/home-bg-jeep.jpg')">
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/home-bg-jeep.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
-                <div class="site-heading">
-                    <h1>FQ Blog </h1>
-                    
-		    <span class="subheading"></span>
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/istio" title="Istio">
+                            Istio
+                        </a>
+                        
+                    </div>
+                    <h1>Android显示系统-架构</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                    &#34;iigeoywq button&#34;
+                             
+                            on 
+                            Wednesday, January 19, 2022
+                            
+                            
+                            
+                            
+                    </span>
                 </div>
             </div>
         </div>
@@ -175,150 +202,238 @@
 <article>
     <div class="container">
         <div class="row">
+
             
             <div class="
-            col-lg-8 col-lg-offset-1
-            col-md-8 col-md-offset-1
-            col-sm-12
-            col-xs-12
-            post-container">
-            
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
                 
-            
-             
-            
+                <blockquote>
+<p>Android系统源码繁杂，庞大，网上分析文章很多，本文结合Android12 源码和一些优秀的文章整理而成。</p>
+</blockquote>
+<h2 id="一-前言">一 前言</h2>
+<h3 id="硬件环境">硬件环境:</h3>
+<ul>
+<li>源码编译环境：Win11+WSL2+Ubuntu22.04</li>
+<li>手机：Pixel3A</li>
+</ul>
+<h3 id="引用资料">引用资料：</h3>
+<ul>
+<li>环境搭建：</li>
+</ul>
+<blockquote>
+<ul>
+<li><a href="https://learn.microsoft.com/zh-cn/windows/wsl/install">使用 WSL 在 Windows 上安装 Linux</a></li>
+<li><a href="https://androidperformance.com/2021/10/26/build-android-12/">Android 系统开发系列（1）：Android 12 源代码下载、编译和刷机</a></li>
+<li><a href="https://juejin.cn/post/7188078567022919739">写给Windows用户的AOSP构建开发环境配置指南</a></li>
+</ul>
+</blockquote>
+<ul>
+<li>官方文档</li>
+</ul>
+<blockquote>
+<ul>
+<li><a href="https://source.android.com/docs/core/graphics?hl=zh-cn">https://source.android.com/docs/core/graphics?hl=zh-cn</a></li>
+<li><a href="https://cs.android.com/androidy">Android官方源码在线浏览仓库</a></li>
+</ul>
+</blockquote>
+<ul>
+<li>引用文章</li>
+</ul>
+<blockquote>
+<p>努比亚技术团队的五篇经典文章</p>
+</blockquote>
+<ul>
+<li><a href="https://www.jianshu.com/p/df46e4b39428">Android画面显示流程分析(1)</a></li>
+<li><a href="https://www.jianshu.com/p/f96ab6646ae3">Android画面显示流程分析(2)</a></li>
+<li><a href="https://www.jianshu.com/p/3c61375cc15b">Android画面显示流程分析(3)</a></li>
+<li><a href="https://www.jianshu.com/p/7a18666a43ce">Android画面显示流程分析(4)</a></li>
+<li><a href="https://www.jianshu.com/p/dcaf1eeddeb1">Android画面显示流程分析(5)</a></li>
+</ul>
+<blockquote>
+<p><a href="http://download.100ask.org/videos_tutorial/android/display/index.html">韦东山Android显示系统专题视频教程</a></p>
+</blockquote>
+<blockquote>
+<p><a href="https://www.cnblogs.com/liusiluandzhangkun/category/1225276.html">https://www.cnblogs.com/liusiluandzhangkun/category/1225276.html</a></p>
+</blockquote>
+<blockquote>
+<p>沧浪之水的几篇文章</p>
+</blockquote>
+<ul>
+<li><a href="https://zhuanlan.zhihu.com/p/261169653">自上而下解读Android显示流程（上）</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/421532503">自上而下解读Android显示流程（中上)</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/261914515">自上而下解读Android显示流程（中下）：Graphic Buffer的共享、分配、同步</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/261657281">自上而下解读Android显示流程（下）-Display Processor的设计</a></li>
+</ul>
+<blockquote>
+<p><a href="https://www.51cto.com/article/717713.html">深入理解Android图形系统</a></p>
+</blockquote>
+<blockquote>
+<p><a href="https://lpc.events/event/5/contributions/319/attachments/442/696/Android_DRM_KMS_Update_XDC2019.pdf">DRM/KMS for Android</a></p>
+</blockquote>
+<blockquote>
+<p><a href="https://static.linaro.org/connect/yvr18/presentations/yvr18-204.pdf">drm_hwcomposer</a></p>
+</blockquote>
+<!-- raw HTML omitted -->
+<h2 id="二-架构">二 架构</h2>
+<p>
+  <img src="/static/img/android%E5%9B%BE%E5%BD%A2%E6%9E%B6%E6%9E%84.png" alt="Android图形架构">
+
+</p>
+<pre><code>* 各层源码仓库地址：
+* App 层:frameworks/base/core/java
+* Java Framework SystemServer ：frameworks/base/services/core
+
+* Jni：frameworks/base/core/jni/Android.bp
+* Native Framework Surfaceflinger client测：
+frameworks\native\libs\gui
+
+*  Native Framework Surfaceflinger server测：
+frameworks/native/services/surfaceflinger
+hwserivice client frameworks\native\services\surfaceflinger\displayhardware
+
+
+* 渲染库 frameworks\base\libs\hwui
+
+
+* Hal层：
+* google软件实现：
+hardware/libhardware/modules/gralloc/
+hardware/libhardware/modules/hwcomposer/
+
+
+* 厂商实现：黑盒子以so方式提供，google仓库有部分开源实现
+hardware/qcom/display/msm8084/libgralloc/
+hardware/qcom/display/msm8084/libhwcomposer/
 
 
 
-            
-            </div>
-            
-            
 
-<div class="
-    col-lg-3 col-lg-offset-0
-    col-md-3 col-md-offset-0
-    col-sm-12
-    col-xs-12
-    sidebar-container
-">
+
+
+
+
+
+
+</code></pre>
+
+                
+                
+<div class="entry-shang text-center">
     
+	    <p>「真诚赞赏，手留余香」</p>
 	
-    <section class="visible-md visible-lg">
-	
-        <div class="short-about">
-            
-            <a href="/about">
-               <img src="/img/logo.png" alt="avatar" style="cursor: pointer" />
-            </a>
-            
-            
-                <p>Software Developer</p>
-            
-           
-           <ul class="list-inline">
-               
-               <li>
-                   <a href="mailto:youremail@gmail.com">
-                      <span class="fa-stack fa-lg">
-                          <i class="fa fa-circle fa-stack-2x"></i>
-                          <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
-                      </span>
-                   </a>
-               </li>
-               
-               
-               
-               
-               
-               
-               <li>
-                   <a target="_blank" href="/your%20wechat%20qr%20code%20image">
-                       <span class="fa-stack fa-lg">
-                           <i class="fas fa-circle fa-stack-2x"></i>
-                           <i class="fab fa-weixin fa-stack-1x fa-inverse"></i>
-                       </span>
-                   </a>
-               </li>
-               
-               
-               <li>
-                   <a target="_blank" href="https://github.com/yourgithub">
-                       <span class="fa-stack fa-lg">
-                           <i class="fas fa-circle fa-stack-2x"></i>
-                           <i class="fab fa-github fa-stack-1x fa-inverse"></i>
-                       </span>
-                   </a>
-               </li>
-               
-               
-               
-               
-               <li>
-                   <a target="_blank" href="https://www.linkedin.com/in/yourlinkedinid">
-                       <span class="fa-stack fa-lg">
-                           <i class="fas fa-circle fa-stack-2x"></i>
-                           <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
-                       </span>
-                   </a>
-               </li>
-               
-               
-               
-                    <li>
-                        <a target="_blank" href="https://stackoverflow.com/users/yourstackoverflowid">
-                            <span class="fa-stack fa-lg">
-                                <i class="fas fa-circle fa-stack-2x"></i>
-                                <i class="fab fa-stack-overflow fa-stack-1x fa-inverse"></i>
-                            </span>
-                        </a>
-                    </li>
-            
-            
-            
-               
-               
-               
-               
-                </ul>
-            </div>
-    </section>
-	
-    
-    
-    
-    
-    <section>
-        <hr class="hidden-sm hidden-xs">
-        <h5>FEATURED TAGS</h5>
-        <div class="tags">
-            
-            
-               
-                    <a href="/tags/istio" title="istio">
-                        istio
-                    </a>
-               
-            
-        </div>
-    </section>
-    
-
-    
-    
-    <section>
-        <hr class="hidden-sm hidden-xs">
-        <h5>FRIENDS</h5>
-        <ul class="list-inline">
-            
-            <li><a target="_blank" href="https://www.jianshu.com/u/e9dc7e422257">iigeoywq的博客</a></li>
-            
-        </ul>
-    </section>
-    
-    
+	<button class="zs show-zs btn btn-bred">赞赏支持</button>
 </div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+	<div class="zs-modal-head">
+		<button type="button" class="close">×</button>
+		<span class="author"><a href="https://ywqyunshan.github.io/"><img src="/img/favicon.png" />FQ Blog</a></span>
+        
+	        <p class="tip"><i></i><span>真诚赞赏，手留余香</span></p>
+		
+ 
+	</div>
+	<div class="zs-modal-body">
+		<div class="zs-modal-btns">
+			<button class="btn btn-blink" data-num="2">2元</button>
+			<button class="btn btn-blink" data-num="5">5元</button>
+			<button class="btn btn-blink" data-num="10">10元</button>
+			<button class="btn btn-blink" data-num="50">50元</button>
+			<button class="btn btn-blink" data-num="100">100元</button>
+			<button class="btn btn-blink" data-num="1">任意金额</button>
+		</div>
+		<div class="zs-modal-pay">
+			<button class="btn btn-bred" id="pay-text">2元</button>
+			<p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+			<img src="/img/reward/wechat-2.png"  id="pay-image"/>
+		</div>
+	</div>
+	<div class="zs-modal-footer">
+		<label><input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked"><span ><span class="zs-wechat"><img src="/img/reward/wechat-btn.png"/></span></label>
+		<label><input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay"><img src="/img/reward/alipay-btn.png"/></span></label>
+	</div>
+</div>
+<script type="text/javascript" src="/js/reward.js"></script>
 
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    
+                    <li class="next">
+                        <a href="/2022/12/07/" data-toggle="tooltip" data-placement="top" title="计算机基础前置知识">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+                
+
+                
+
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        <a href="/tags/istio" title="istio">
+                            istio
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+                <section>
+                    <hr>
+                    <h5>FRIENDS</h5>
+                    <ul class="list-inline">
+                        
+                        <li><a target="_blank" href="https://www.jianshu.com/u/e9dc7e422257">iigeoywq的博客</a></li>
+                        
+                    </ul>
+                </section>
+                
+            </div>
         </div>
     </div>
 </article>
