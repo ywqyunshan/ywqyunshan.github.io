@@ -15,9 +15,9 @@
     
 
     
-    <meta name="title" content="Tech" />
-    <meta property="og:title" content="Tech" />
-    <meta property="twitter:title" content="Tech" />
+    <meta name="title" content="Android图形系统-窗口子系统" />
+    <meta property="og:title" content="Android图形系统-窗口子系统" />
+    <meta property="twitter:title" content="Android图形系统-窗口子系统" />
     
 
     
@@ -34,9 +34,9 @@
     <meta name="keyword"  content="iigeoywq, 博客, 个人网站, 图形学, GIS, 座舱, 车载, Andorid, 系统">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>Tech | </title>
+    <title>Android图形系统-窗口子系统 | </title>
 
-    <link rel="canonical" href="/categories/tech/">
+    <link rel="canonical" href="/2022/02/04/">
 
     
     
@@ -155,14 +155,41 @@
 
 
 
-<header class="intro-header" style="background-image: url('/img/home-bg-jeep.jpg')">
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/home-bg-jeep.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
-                <div class="site-heading">
-                    <h1>FQ Blog </h1>
-                    
-		    <span class="subheading"></span>
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/istio" title="Istio">
+                            Istio
+                        </a>
+                        
+                    </div>
+                    <h1>Android图形系统-窗口子系统</h1>
+                    <h2 class="subheading">窗口管理</h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                    &#34;iigeoywq button&#34;
+                             
+                            on 
+                            Saturday, February 4, 2023
+                            
+                            
+                            
+                            
+                    </span>
                 </div>
             </div>
         </div>
@@ -171,238 +198,222 @@
 
 
 
-  
-<div data-pagefind-ignore="all" class="container">
-    <div class="row">
-        
-        
-   	    <div class="
-            col-lg-8 col-lg-offset-1
-            col-md-8 col-md-offset-1
-            col-sm-12
-            col-xs-12
-            post-container
-        ">
+
+<article>
+    <div class="container">
+        <div class="row">
+
             
-<div data-pagefind-ignore="all">
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
 
-<div class="post-preview">
-    <a href="https://ywqyunshan.github.io/2022/02/04/">
-        <h2 class="post-title">
-            Android图形系统-窗口子系统
-        </h2>
-	
-        <h3 class="post-subtitle">
-            窗口管理
-        </h3>
-	
-        <div class="post-content-preview">
-	
-            对于图形系统而言，首先要有一个窗口，接下来在窗口中拿到buffer去渲染，最后合成图层并送显，本片主要讲一下，如何获取一个窗口，当然Andr
-       
-        </div>
-    </a>
-    <p class="post-meta">
-    
-        Posted by     &#34;iigeoywq button&#34; on Saturday, February 4, 2023
-        
-        
-    
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="https://ywqyunshan.github.io/2022/01/19/">
-        <h2 class="post-title">
-            Android图形系统-架构
-        </h2>
-	
-        <div class="post-content-preview">
-	
-            <blockquote>
-<p>Android系统源码繁杂，庞大，网上分析文章很多，本文结合Android12 源码和一些优秀的文章整理而成。</p>
+                
+                <blockquote>
+<p>对于图形系统而言，首先要有一个窗口，接下来在窗口中拿到buffer去渲染，最后合成图层并送显，本片主要讲一下，如何获取一个窗口，当然Android上的窗口是一个抽象概念。</p>
 </blockquote>
-       
-        </div>
-    </a>
-    <p class="post-meta">
-    
-        Posted by     &#34;iigeoywq button&#34; on Thursday, January 19, 2023
-        
-        
-    
-    </p>
+<h2 id="一-窗口管理架构">一 窗口管理架构</h2>
+<p>Android中的窗口是个抽象概念：本质上是一块画布，但是没有申请buffer，绘制的时候才会申请buffer。</p>
+<p>纵向来说每层都有个对应的概念，依次为Window(抽象概念）&ndash;&gt;WindowState(SurfaceView无)&ndash;&gt;Surface&ndash;&gt;Layer
+注意：SurfaceView不走WMS，直接Jni调用Native Client端创建surface。</p>
+<ul>
+<li>
+<p>应用层：有三种类型</p>
+<ul>
+<li>Phonewindow：每个Acitivity对应一个PhoneWindow，但是它是个抽象，具体的实现是DecorView，DecorView是一个Acitivity最顶层的View，在WMS测WindowManager.addView()方法添加的view就是DecorView。</li>
+<li>系统级的窗口:例如状态栏，没有PhoneWindow概念，本质上是一个view，在WMS测WindowManager.addView()方法直接添加该View。</li>
+<li>SurfaceView：本质上是view，没有window概念，WMS测不需要管理，直接创建surface。</li>
+</ul>
+</li>
+<li>
+<p>Java Framework层：
+对应创建windowState和应用层的window对应，但是SurfaceView没有这个概念。</p>
+</li>
+<li>
+<p>Native Framework层：</p>
+<ul>
+<li>client：Surface</li>
+<li>server（SurfaceFligner）：Layer</li>
+</ul>
+</li>
+</ul>
+<p>总的来说，Android中的Window对应的是native client测的Surface，在应用层测有不同的实现方式。但是Native测实现方式相同。</p>
+<h2 id="二-源码分析">二 源码分析</h2>
+<p>以Activity中的surfce创建来分析：</p>
+<p>首先系统会为应用创建一个进程，并最终通过ActivityThread创建自己的Activity,调用到它的performLaunchActivity方法 
+(篇幅所限进入attach方法前的流程请自行阅读源码)</p>
+<p>frameworks/base/core/java/android/app/ActivityThread.java</p>
+<pre><code>/**  Core implementation of activity launch. */
+    private Activity performLaunchActivity(ActivityClientRecord r, Intent customIntent) {
+        ...
+        //1.创建Activity的Context
+        ContextImpl appContext = createBaseContextForActivity(r);
+        try {
+            ...
+            //2.反射创建Activity对象
+            activity = mInstrumentation.newActivity(
+                    cl, component.getClassName(), r.intent);
+            ...
+        } catch (Exception e) {
+            ...
+        }
 
+        try {
+            if (activity != null) {
+                ...
+                //3.执行Activity的attach动作
+                activity.attach(...);
+                ...
+                // 4.执行应用Activity的onCreate生命周期函数,并在setContentView调用中创建DecorView对象
+                mInstrumentation.callActivityOnCreate(...);
+                ...
+            }
+
+        } catch (SuperNotCalledException e) {
+            ...
+        } catch (Exception e) {
+            ...
+        }
+        ...
+    }
+</code></pre><p>frameworks/base/core/java/android/app/Activity.java</p>
+<pre><code>@UnsupportedAppUsage
+    final void attach(Context context, 
+        ...
+        //3.1 创建表示应用窗口的PhoneWindow对象
+        mWindow = new PhoneWindow(this, 
+        ...
+        //3.2 为PhoneWindow配置WindowManager
+        mWindow.setWindowManager(
+                (WindowManager)context.getSystemService(Context.WINDOW_SERVICE),
+                mToken, mComponent.flattenToString(),
+                (info.flags &amp; ActivityInfo.FLAG_HARDWARE_ACCELERATED) != 0);
+        ...
+    }
+    ```
+
+
+</code></pre>
+
+                
+                
+<div class="entry-shang text-center">
+    
+	    <p>「真诚赞赏，手留余香」</p>
+	
+	<button class="zs show-zs btn btn-bred">赞赏支持</button>
 </div>
-<hr>
-
-<div class="post-preview">
-    <a href="https://ywqyunshan.github.io/2022/12/07/">
-        <h2 class="post-title">
-            计算机基础前置知识
-        </h2>
-	
-        <h3 class="post-subtitle">
-            计算机体系
-        </h3>
-	
-        <div class="post-content-preview">
-	
-            <blockquote>
-<p>任何问题都会有一个前置条件，为了进一步学习操作系统，梳理一下计算机系统学习的前置知识，本文主要记录<a href="https://www.bilibili.com/video/BV1EW411u7th/?p=1&amp;share_medium=iphone&amp;share_plat=ios&amp;share_source=COPY&amp;share_tag=s_i&amp;timestamp=1626958909&amp;unique_k=a33Kwq">【计算机科学速成课】[40集全/精校] - Crash Course Computer Science</a>和《深入浅出计算机组成原理》学习笔记。</p>
-</blockquote>
-       
-        </div>
-    </a>
-    <p class="post-meta">
-    
-        Posted by     &#34;iigeoywq&#34; on Wednesday, December 7, 2022
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+	<div class="zs-modal-head">
+		<button type="button" class="close">×</button>
+		<span class="author"><a href="https://ywqyunshan.github.io/"><img src="/img/favicon.png" />FQ Blog</a></span>
         
-        
-    
-    </p>
-
-</div>
-<hr>
-
-</div>
-
-            
-
-
-
-       	</div>
-        
-
-<div class="
-    col-lg-3 col-lg-offset-0
-    col-md-3 col-md-offset-0
-    col-sm-12
-    col-xs-12
-    sidebar-container
-">
-    
-	
-    <section class="visible-md visible-lg">
-	
-        <div class="short-about">
-            
-            <a href="/about">
-               <img src="/img/logo.png" alt="avatar" style="cursor: pointer" />
-            </a>
-            
-            
-                <p>Software Developer</p>
-            
-           
-           <ul class="list-inline">
-               
-               <li>
-                   <a href="mailto:youremail@gmail.com">
-                      <span class="fa-stack fa-lg">
-                          <i class="fa fa-circle fa-stack-2x"></i>
-                          <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
-                      </span>
-                   </a>
-               </li>
-               
-               
-               
-               
-               
-               
-               <li>
-                   <a target="_blank" href="/your%20wechat%20qr%20code%20image">
-                       <span class="fa-stack fa-lg">
-                           <i class="fas fa-circle fa-stack-2x"></i>
-                           <i class="fab fa-weixin fa-stack-1x fa-inverse"></i>
-                       </span>
-                   </a>
-               </li>
-               
-               
-               <li>
-                   <a target="_blank" href="https://github.com/yourgithub">
-                       <span class="fa-stack fa-lg">
-                           <i class="fas fa-circle fa-stack-2x"></i>
-                           <i class="fab fa-github fa-stack-1x fa-inverse"></i>
-                       </span>
-                   </a>
-               </li>
-               
-               
-               
-               
-               <li>
-                   <a target="_blank" href="https://www.linkedin.com/in/yourlinkedinid">
-                       <span class="fa-stack fa-lg">
-                           <i class="fas fa-circle fa-stack-2x"></i>
-                           <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
-                       </span>
-                   </a>
-               </li>
-               
-               
-               
-                    <li>
-                        <a target="_blank" href="https://stackoverflow.com/users/yourstackoverflowid">
-                            <span class="fa-stack fa-lg">
-                                <i class="fas fa-circle fa-stack-2x"></i>
-                                <i class="fab fa-stack-overflow fa-stack-1x fa-inverse"></i>
-                            </span>
-                        </a>
-                    </li>
-            
-            
-            
-               
-               
-               
-               
-                </ul>
-            </div>
-    </section>
-	
-    
-    
-    
-    
-    <section>
-        <hr class="hidden-sm hidden-xs">
-        <h5>FEATURED TAGS</h5>
-        <div class="tags">
-            
-            
-               
-                    <a href="/tags/istio" title="istio">
-                        istio
-                    </a>
-               
-            
-        </div>
-    </section>
-    
-
-    
-    
-    <section>
-        <hr class="hidden-sm hidden-xs">
-        <h5>FRIENDS</h5>
-        <ul class="list-inline">
-            
-            <li><a target="_blank" href="https://www.jianshu.com/u/e9dc7e422257">iigeoywq的博客</a></li>
-            
-        </ul>
-    </section>
-    
-    
-</div>
-
+	        <p class="tip"><i></i><span>真诚赞赏，手留余香</span></p>
+		
+ 
+	</div>
+	<div class="zs-modal-body">
+		<div class="zs-modal-btns">
+			<button class="btn btn-blink" data-num="2">2元</button>
+			<button class="btn btn-blink" data-num="5">5元</button>
+			<button class="btn btn-blink" data-num="10">10元</button>
+			<button class="btn btn-blink" data-num="50">50元</button>
+			<button class="btn btn-blink" data-num="100">100元</button>
+			<button class="btn btn-blink" data-num="1">任意金额</button>
+		</div>
+		<div class="zs-modal-pay">
+			<button class="btn btn-bred" id="pay-text">2元</button>
+			<p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+			<img src="/img/reward/wechat-2.png"  id="pay-image"/>
+		</div>
+	</div>
+	<div class="zs-modal-footer">
+		<label><input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked"><span ><span class="zs-wechat"><img src="/img/reward/wechat-btn.png"/></span></label>
+		<label><input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay"><img src="/img/reward/alipay-btn.png"/></span></label>
 	</div>
 </div>
+<script type="text/javascript" src="/js/reward.js"></script>
 
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2022/01/19/" data-toggle="tooltip" data-placement="top" title="Android图形系统-架构">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+                
+
+                
+
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        <a href="/tags/istio" title="istio">
+                            istio
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+                <section>
+                    <hr>
+                    <h5>FRIENDS</h5>
+                    <ul class="list-inline">
+                        
+                        <li><a target="_blank" href="https://www.jianshu.com/u/e9dc7e422257">iigeoywq的博客</a></li>
+                        
+                    </ul>
+                </section>
+                
+            </div>
+        </div>
+    </div>
+</article>
 
 
 
@@ -480,7 +491,7 @@
             
            
                    <li>
-                       <a href='/categories/tech/index.xml' rel="alternate" type="application/rss+xml" title="FQ Blog" >
+                       <a href='' rel="alternate" type="application/rss+xml" title="FQ Blog" >
                            <span class="fa-stack fa-lg">
                                <i class="fas fa-circle fa-stack-2x"></i>
                                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>

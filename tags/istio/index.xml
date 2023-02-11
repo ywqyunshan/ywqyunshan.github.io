@@ -6,10 +6,30 @@
     <description>Recent content in Istio on FQ Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 07 Dec 2022 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 04 Feb 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://ywqyunshan.github.io/tags/istio/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Android图形系统-窗口子系统</title>
+      <link>https://ywqyunshan.github.io/2022/02/04/</link>
+      <pubDate>Sat, 04 Feb 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://ywqyunshan.github.io/2022/02/04/</guid>
+      <description>对于图形系统而言，首先要有一个窗口，接下来在窗口中拿到buffer去渲染，最后合成图层并送显，本片主要讲一下，如何获取一个窗口，当然Andr</description>
+    </item>
+    
+    <item>
+      <title>Android图形系统-架构</title>
+      <link>https://ywqyunshan.github.io/2022/01/19/</link>
+      <pubDate>Thu, 19 Jan 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://ywqyunshan.github.io/2022/01/19/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;Android系统源码繁杂，庞大，网上分析文章很多，本文结合Android12 源码和一些优秀的文章整理而成。&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
     
     <item>
       <title>计算机基础前置知识</title>
@@ -19,17 +39,6 @@
       <guid>https://ywqyunshan.github.io/2022/12/07/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;任何问题都会有一个前置条件，为了进一步学习操作系统，梳理一下计算机系统学习的前置知识，本文主要记录&lt;a href=&#34;https://www.bilibili.com/video/BV1EW411u7th/?p=1&amp;amp;share_medium=iphone&amp;amp;share_plat=ios&amp;amp;share_source=COPY&amp;amp;share_tag=s_i&amp;amp;timestamp=1626958909&amp;amp;unique_k=a33Kwq&#34;&gt;【计算机科学速成课】[40集全/精校] - Crash Course Computer Science&lt;/a&gt;和《深入浅出计算机组成原理》学习笔记。&lt;/p&gt;
-&lt;/blockquote&gt;</description>
-    </item>
-    
-    <item>
-      <title>Android显示系统-架构</title>
-      <link>https://ywqyunshan.github.io/2022/01/19/</link>
-      <pubDate>Wed, 19 Jan 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://ywqyunshan.github.io/2022/01/19/</guid>
-      <description>&lt;blockquote&gt;
-&lt;p&gt;Android系统源码繁杂，庞大，网上分析文章很多，本文结合Android12 源码和一些优秀的文章整理而成。&lt;/p&gt;
 &lt;/blockquote&gt;</description>
     </item>
     
