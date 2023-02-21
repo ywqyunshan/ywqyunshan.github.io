@@ -211,19 +211,19 @@
 
                 
                 <blockquote>
-<p>对于图形系统而言，首先要有一个窗口，接下来在窗口中拿到buffer去渲染，最后合成图层并送显，本片主要讲一下，如何获取一个窗口，当然Android上的窗口是一个抽象概念。</p>
+<p>对于图形系统而言，
+首先要有一个窗口（自上而下每层对应的概念不同），接下来在窗口中拿到buffer去渲染，最后合成图层并送显，本片主要讲一下，如何获取一个窗口，以及合成。</p>
 </blockquote>
-<h2 id="一-窗口管理架构">一 窗口管理架构</h2>
-<p>Android中的窗口是个抽象概念：本质上是一块画布，但是没有申请buffer，绘制的时候才会申请buffer。</p>
-<p>纵向来说每层都有个对应的概念，依次为Window(抽象概念）&ndash;&gt;WindowState(SurfaceView无)&ndash;&gt;Surface&ndash;&gt;Layer
-注意：SurfaceView不走WMS，直接Jni调用Native Client端创建surface。</p>
+<h2 id="一-窗口子系统架构">一 窗口子系统架构</h2>
+<p>Android中的窗口是个抽象概念：本质上是一块画布，但是没有申请buffer，绘制的时候才会申请buffer，但是合成的时候，是已经渲染完成的layer（见渲染篇的代码分析）。</p>
+<p>纵向来说每层都有个对应的概念，依次为Window(抽象概念）&ndash;&gt;WindowState&ndash;&gt;Surface&ndash;&gt;Layer&ndash;&gt;hwc2_layer_t
+注意：SurfaceView不走WMS创建Surface，直接Jni调用Native Client端创建surface。暂不讨论。</p>
 <ul>
 <li>
-<p>应用层：有三种类型</p>
+<p>应用层：有二种抽象类型</p>
 <ul>
 <li>Phonewindow：每个Acitivity对应一个PhoneWindow，但是它是个抽象，具体的实现是DecorView，DecorView是一个Acitivity最顶层的View，在WMS测WindowManager.addView()方法添加的view就是DecorView。</li>
 <li>系统级的窗口:例如状态栏，没有PhoneWindow概念，本质上是一个view，在WMS测WindowManager.addView()方法直接添加该View。</li>
-<li>SurfaceView：本质上是view，没有window概念，WMS测不需要管理，直接创建surface。</li>
 </ul>
 </li>
 <li>
@@ -237,64 +237,498 @@
 <li>server（SurfaceFligner）：Layer</li>
 </ul>
 </li>
+<li>
+<p>Hal层:</p>
+<ul>
+<li>client：HWC2::Layer</li>
+<li>server：HWCLayer::hwc2_layer_t</li>
 </ul>
-<p>总的来说，Android中的Window对应的是native client测的Surface，在应用层测有不同的实现方式。但是Native测实现方式相同。</p>
-<h2 id="二-源码分析">二 源码分析</h2>
-<p>以Activity中的surfce创建来分析：</p>
-<p>首先系统会为应用创建一个进程，并最终通过ActivityThread创建自己的Activity,调用到它的performLaunchActivity方法 
-(篇幅所限进入attach方法前的流程请自行阅读源码)</p>
-<p>frameworks/base/core/java/android/app/ActivityThread.java</p>
-<pre><code>/**  Core implementation of activity launch. */
-    private Activity performLaunchActivity(ActivityClientRecord r, Intent customIntent) {
-        ...
-        //1.创建Activity的Context
-        ContextImpl appContext = createBaseContextForActivity(r);
-        try {
-            ...
-            //2.反射创建Activity对象
-            activity = mInstrumentation.newActivity(
-                    cl, component.getClassName(), r.intent);
-            ...
-        } catch (Exception e) {
-            ...
-        }
+</li>
+<li>
+<p>内核层：Drm-&gt;KMS-&gt;plane</p>
+</li>
+</ul>
+<p>总的来说，Android中的Window对应的是native测的Surface/Layer。</p>
+<h2 id="二-源码目录">二 源码目录</h2>
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-lboi{border-color:inherit;text-align:left;vertical-align:middle}
+.tg .tg-uzvj{border-color:inherit;font-weight:bold;text-align:center;vertical-align:middle}
+.tg .tg-7btt{border-color:inherit;font-weight:bold;text-align:center;vertical-align:top}
+.tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
+.tg .tg-0lax{text-align:left;vertical-align:top}
+</style>
+<table class="tg" style="undefined;table-layout: fixed; width: 1529px">
+<colgroup>
+<col style="width: 100.333333px">
+<col style="width: 116.333333px">
+<col style="width: 366.333333px">
+<col style="width: 310.666666px">
+<col style="width: 68.333333px">
+<col style="width: 162.333333px">
+<col style="width: 284.333333px">
+<col style="width: 120.333333px">
+</colgroup>
+<thead>
+  <tr>
+    <th class="tg-uzvj" colspan="2" rowspan="2">模块</th>
+    <th class="tg-7btt" colspan="2">源码路径</th>
+    <th class="tg-uzvj">进程</th>
+    <th class="tg-7btt" colspan="2">类库</th>
+    <th class="tg-uzvj" rowspan="2">备注</th>
+  </tr>
+  <tr>
+    <th class="tg-uzvj">Android实现</th>
+    <th class="tg-uzvj">厂商（高通）实现</th>
+    <th class="tg-0pky"></th>
+    <th class="tg-uzvj">Android</th>
+    <th class="tg-uzvj">厂商（高通）</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-0pky" colspan="2">APP层</td>
+    <td class="tg-0pky" colspan="2"></td>
+    <td class="tg-0pky" rowspan="2">同属一个进程</td>
+    <td class="tg-0pky" colspan="2">APK</td>
+    <td class="tg-0pky"></td>
+  </tr>
+  <tr>
+    <td class="tg-lboi" rowspan="3">Java Framework层</td>
+    <td class="tg-0pky">Client</td>
+    <td class="tg-0pky" colspan="2">frameworks/base/core/java/android/app/Activity.java<br>frameworks/base/core/java/android/view/ViewRootImpl.java<br>frameworks/base/core/java/com/android/internal/policy/DecorView.java</td>
+    <td class="tg-0pky" colspan="2">system/framework/framework.jar</td>
+    <td class="tg-0pky"></td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">Server-AMS</td>
+    <td class="tg-0pky" colspan="2">frameworks/base/services/core/java/com/android/server/am/ActivityManagerService.java</td>
+    <td class="tg-0pky"></td>
+    <td class="tg-0pky" colspan="2" rowspan="2">system/framework/service.jar</td>
+    <td class="tg-0pky"></td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">Server-WMS</td>
+    <td class="tg-0pky" colspan="2">frameworks/base/services/core/java/com/android/server/wm/WindowManagerService.java<br>frameworks/base/services/core/java/com/android/server/wm/WindowState.java<br></td>
+    <td class="tg-0pky" rowspan="3">同属一个进程</td>
+    <td class="tg-0pky"></td>
+  </tr>
+  <tr>
+    <td class="tg-lboi" rowspan="3">Native Framework层<br></td>
+    <td class="tg-0pky">Jni</td>
+    <td class="tg-0pky" colspan="2">frameworks/base/core/jni/android_view_Surface.cpp<br>frameworks/base/core/jni/android_view_SurfaceControl.cpp<br>frameworks/base/core/jni/android_view_SurfaceSession.cpp<br></td>
+    <td class="tg-0pky" colspan="2">/system/lib64/libandroid_runtime.so</td>
+    <td class="tg-0pky"></td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">Client</td>
+    <td class="tg-0pky" colspan="2">frameworks/native/libs/gui/Surface.cpp<br>frameworks/native/libs/gui/SurfaceControl.cpp<br>frameworks/native/libs/gui/SurfaceComposerClient.cppframeworks/native/libs/gui/SurfaceControl.cpp</td>
+    <td class="tg-0pky" colspan="2">http://system/lib64/libgui.so</td>
+    <td class="tg-0pky"></td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">Server-SurfaceFilnger</td>
+    <td class="tg-0pky" colspan="2">frameworks/native/services/surfaceflinger/Layer.cpp<br>frameworks/native/services/surfaceflinger/Client.cpp<br></td>
+    <td class="tg-0pky" rowspan="2">同一个进程</td>
+    <td class="tg-0pky" colspan="2" rowspan="2">/system/bin/surfaceflinger</td>
+    <td class="tg-0pky"></td>
+  </tr>
+  <tr>
+    <td class="tg-0pky" rowspan="4">Hal层</td>
+    <td class="tg-0pky">Client</td>
+    <td class="tg-0pky" colspan="2">frameworks/native/services/surfaceflinger/DisplayHardware/HWComposer.cpp (HWC1)<br>/frameworks/native/services/surfaceflinger/DisplayHardware/HWC2.cpp (HWC2)<br></td>
+    <td class="tg-0pky"></td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">Server-HWC</td>
+    <td class="tg-0lax" colspan="2">hardware/interfaces/graphics/composer/2.1/default<br></td>
+    <td class="tg-0pky"></td>
+    <td class="tg-0lax" colspan="2">vendor/lib64/hw/android.hardware.graphics.composer@2.1-impl.so<br>vendor/bin/hw/android.hardware.graphics.composer@2.1-service<br></td>
+    <td class="tg-0lax"></td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">hwc实现</td>
+    <td class="tg-0lax">hardware/libhardware/modules/hwcomposer/hwcomposer.cpp（HWC1）<br>external/drm_hwcomposer/（HWC2 三方开源实现）</td>
+    <td class="tg-0lax">hardware/qcom/display/msm8226/libhwcomposer/hwc.cpp(HWC1)<br><br>hardware/qcom/sdm845/display/sdm/libs/hwc2/(HWC2)</td>
+    <td class="tg-0lax"></td>
+    <td class="tg-0lax">hwcomposer.default.so(HWC1)<br>hwcomposer.drm.so(HWC2)</td>
+    <td class="tg-0lax">vendor/lib64/hw/hwcomposer.msmxxx,so(HWC1)<br>vendor/lib64/hw/hwcomposer.sdmxxx.so(HWC2)</td>
+    <td class="tg-0lax">高通的so都是闭源的，高通只开放了部分源码仅供参考，以高通官方文档为准</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">drm接口层</td>
+    <td class="tg-0lax" colspan="2">external/libdrm/libkms/</td>
+    <td class="tg-0lax"></td>
+    <td class="tg-0lax" colspan="2">vendor/lib64/libdrm.so</td>
+    <td class="tg-0lax"></td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">内核层</td>
+    <td class="tg-0lax">DRM-KMS</td>
+    <td class="tg-0lax">待确定</td>
+    <td class="tg-0lax">common/drivers/gpu/drm/msm/</td>
+    <td class="tg-0pky"></td>
+    <td class="tg-0lax">待确定</td>
+    <td class="tg-0pky">待确定</td>
+    <td class="tg-0lax"></td>
+  </tr>
+</tbody>
+</table>
+<p>Android8以后默认HWC2接口实现，所以忽略HWC1的分析。</p>
+<h2 id="三-源码分析">三 源码分析</h2>
+<p>接下来自上而下分析Android中Activity抽象窗口如何创建。篇幅有限，只梳理关键部分。</p>
+<h3 id="31-app进程创建">3.1 App进程创建</h3>
+<p>首先需要创建一个app进程，并创建Activity，参考这篇文章
+<a href="https://www.jianshu.com/p/37370c1d17fc">Android应用启动全流程分析</a>4到6节。</p>
+<h3 id="32-surface和layer创建">3.2 Surface和Layer创建</h3>
+<p>先小结一下，Java测的Surface对象是一个序列化对象，App进程和WMS进程共用，app进程将surface对象aidl声明为out的方式，传入wms进程，通过jni调用native测进程创建后，回传app进程。</p>
+<h3 id="321-向系统申请app类型的vsync信号">3.2.1 向系统申请app类型的vsync信号</h3>
+<p>接3.1 来到Activity创建后的，经过下面流程WMS添加view到窗口。引用沧浪之水的一张图看一下。
 
-        try {
-            if (activity != null) {
-                ...
-                //3.执行Activity的attach动作
-                activity.attach(...);
-                ...
-                // 4.执行应用Activity的onCreate生命周期函数,并在setContentView调用中创建DecorView对象
-                mInstrumentation.callActivityOnCreate(...);
-                ...
+  <img src="/img/WMS%E6%B7%BB%E5%8A%A0window.jpg" alt="WMS添加Window过程">
+
+
+接上图来到ViewRootImpl的setView方法，最终会向系统申请app类型的vsync信号。</p>
+<pre><code>/*frameworks/base/core/java/android/view/WindowManagerGlobal.java*/
+public void addView(...) {
+     // 创建ViewRootImpl对象
+     root = new ViewRootImpl(view.getContext(), display);
+     ...
+     try {
+         // 执行ViewRootImpl的setView函数
+         root.setView(view, wparams, panelParentView, userId);
+     } catch (RuntimeException e) {
+         ...
+     } 
+}
+
+/*frameworks/base/core/java/android/view/ViewRootImpl.java*/
+public void setView(View view, WindowManager.LayoutParams attrs, View panelParentView,
+            int userId) {
+      synchronized (this) {
+         if (mView == null) {
+             mView = view;
+         }
+         ...
+         // 开启绘制硬件加速，初始化RenderThread渲染线程运行环境
+         enableHardwareAcceleration(attrs);
+         ...
+         // 触发绘制动作
+         requestLayout();
+}
+/*frameworks/base/core/java/android/view/ViewRootImpl.java*/
+public void requestLayout() {
+    if (!mHandlingLayoutInLayoutRequest) {
+         // 检查当前UI绘制操作是否发生在主线程，如果发生在子线程则会抛出异常
+         checkThread();
+         mLayoutRequested = true;
+         // 触发绘制操作
+         scheduleTraversals();
+    }
+}
+
+@UnsupportedAppUsage
+void scheduleTraversals() {
+    if (!mTraversalScheduled) {
+         ...
+         // 注意此处会往主线程的MessageQueue消息队列中添加同步栏删，因为系统绘制消息属于异步消息，需要更高优先级的处理
+         mTraversalBarrier = mHandler.getLooper().getQueue().postSyncBarrier();
+         // 通过Choreographer往主线程消息队列添加CALLBACK_TRAVERSAL绘制类型的待执行消息，用于触发后续UI线程真正实现绘制动作
+         mChoreographer.postCallback(
+                    Choreographer.CALLBACK_TRAVERSAL, mTraversalRunnable, null);
+         ...
+     }
+}
+</code></pre><h3 id="322-收到vsync通知后调到relayoutwindow方法将msurfacecontrol序列化对象传入wms进程创建surfae">3.2.2 收到vsync通知后，调到relayoutWindow方法，将mSurfaceControl序列化对象传入wms进程创建surfae</h3>
+<pre><code>/*frameworks/base/core/java/android/view/ViewRootImpl.java*/
+void doTraversal() {
+     if (mTraversalScheduled) {
+         mTraversalScheduled = false;
+         // 调用removeSyncBarrier及时移除主线程MessageQueue中的Barrier同步栏删，以避免主线程发生“假死”
+         mHandler.getLooper().getQueue().removeSyncBarrier(mTraversalBarrier);
+         ...
+        // 1.执行具体的绘制任务
+         performTraversals();
+         ...
+        // 2.从DecorView根节点出发，遍历整个View控件树，完成整个View控件树的layout测量操作
+         performLayout(lp, mWidth, mHeight);
+        ...
+        // 3.从DecorView根节点出发，遍历整个View控件树，完成整个View控件树的draw测量操作
+         performDraw();
+     ...
+
+    }
+}
+
+private void performTraversals() {
+     ...
+     // 1.1 从DecorView根节点出发，遍历整个View控件树，完成整个View控件树的measure测量操作
+     windowSizeMayChange |= measureHierarchy(...);
+     ...
+     if (mFirst...) {
+    // 1.2 第一次执行traversals绘制任务时，Binder调用访问系统窗口管理服务WMS的relayoutWindow接口，实现WMS计算应用窗口尺寸并向系统surfaceflinger正式申请Surface“画布”操作
+         relayoutResult = relayoutWindow(params, viewVisibility, insetsPending);
+     }
+     ...
+}
+
+private int relayoutWindow(WindowManager.LayoutParams params, int viewVisibility,
+            boolean insetsPending) throws RemoteException {
+        ...
+        // 1.2.1通过Binder IPC访问系统WMS服务的relayout接口，申请Surface“画布”操作
+        int relayoutResult = mWindowSession.relayout(mWindow, mSeq, params,
+                (int) (mView.getMeasuredWidth() * appScale + 0.5f),
+                (int) (mView.getMeasuredHeight() * appScale + 0.5f), viewVisibility,
+                insetsPending ? WindowManagerGlobal.RELAYOUT_INSETS_PENDING : 0, frameNumber,
+                mTmpFrame, mTmpRect, mTmpRect, mTmpRect, mPendingBackDropFrame,
+                mPendingDisplayCutout, mPendingMergedConfiguration, mSurfaceControl, mTempInsets,
+                mTempControls, mSurfaceSize, mBlastSurfaceControl);
+        if (mSurfaceControl.isValid()) {
+            if (!useBLAST()) {
+                // 1.2.3 本地Surface对象获取指向远端分配的Surface的引用
+                mSurface.copyFrom(mSurfaceControl);
+            } else {
+               ...
             }
-
-        } catch (SuperNotCalledException e) {
-            ...
-        } catch (Exception e) {
-            ...
         }
         ...
+}
+</code></pre><h3 id="323-jni调用创建surface">3.2.3 jni调用创建surface</h3>
+<p>接3.2.2 来到wms进程，最终通过jni调用（android_view_SurfaceControl类），来到native cleint端（libgui库）创建SurfaceComposerClient对象并和surfaceflinger进程 connect，在sf测创建layer和bufferqueue对象，最后WMS的createSurfaceControl方法中是通过getSurfaceControl将SurfaceControll传出来的给到app进程共用。
+参考<a href="https://www.jianshu.com/p/7a18666a43ce">Android画面显示流程分析(4)</a>7.1小节。同时引用沧浪之水的一张图看一下。
+
+  <img src="img/sf%E5%88%9B%E5%BB%BAsurface.jpg" alt="SF创建layer过程">
+
+</p>
+<h2 id="33-绘制详细内容参考绘制篇">3.3 绘制（详细内容参考绘制篇）</h2>
+<p>创建surface/layer后，这时候layer中的buffer 是空的。接3.2.2的部分最终到renderthrea线程，通过layer申请buffer，绘制，并提交buffer。（下一篇重点分析）。</p>
+<h2 id="34-根据layer所属的displayid创建hwc-client对应的hwc2layer">3.4 根据layer所属的displayid创建HWC client对应的HWC2::layer</h2>
+<p>sf测收到vsync-sf信号后，去当前对应layers数组中查找可以合成的layer,并创建hwc client对应的hwc2::layer。</p>
+<h3 id="341-sf收到vsync信号后">3.4.1 sf收到vsync信号后</h3>
+<pre><code>/*frameworks/native/services/surfaceflinger/Surfaceflinger.cpp*/
+
+void SurfaceFlinger::onMessageReceived(int32_t what, nsecs_t expectedVSyncTime) {
+    ATRACE_CALL();
+    switch (what) {
+        case MessageQueue::INVALIDATE: {
+            onMessageInvalidate(expectedVSyncTime);
+            break;
+        }
+        case MessageQueue::REFRESH: {
+            //1.收到vsync信号
+            onMessageRefresh();
+            break;
+        }
     }
-</code></pre><p>frameworks/base/core/java/android/app/Activity.java</p>
-<pre><code>@UnsupportedAppUsage
-    final void attach(Context context, 
-        ...
-        //3.1 创建表示应用窗口的PhoneWindow对象
-        mWindow = new PhoneWindow(this, 
-        ...
-        //3.2 为PhoneWindow配置WindowManager
-        mWindow.setWindowManager(
-                (WindowManager)context.getSystemService(Context.WINDOW_SERVICE),
-                mToken, mComponent.flattenToString(),
-                (info.flags &amp; ActivityInfo.FLAG_HARDWARE_ACCELERATED) != 0);
+}
+
+void SurfaceFlinger::onMessageRefresh() {
+    ATRACE_CALL();
+
+    mRefreshPending = false;
+
+    compositionengine::CompositionRefreshArgs refreshArgs;
+    const auto&amp; displays = ON_MAIN_THREAD(mDisplays);
+     // 1.1 保存当前displaydevice 数组
+    refreshArgs.outputs.reserve(displays.size());
+    for (const auto&amp; [_, display] : displays) {
+        refreshArgs.outputs.push_back(display-&gt;getCompositionDisplay());
+    }
+    // 1.2 保存当前layer数组
+    mDrawingState.traverseInZOrder([&amp;refreshArgs](Layer* layer) {
+        if (auto layerFE = layer-&gt;getCompositionEngineLayerFE())
+            refreshArgs.layers.push_back(layerFE);
+    });
+    // 1.3 保存当前前有queueframes（有Buffer）的layer数组
+    refreshArgs.layersWithQueuedFrames.reserve(mLayersWithQueuedFrames.size());
+    for (sp&lt;Layer&gt; layer : mLayersWithQueuedFrames) {
+        if (auto layerFE = layer-&gt;getCompositionEngineLayerFE())
+            refreshArgs.layersWithQueuedFrames.push_back(layerFE);
+    }
+ 
+    ...
+    // 1.3 核心逻辑
+    mCompositionEngine-&gt;present(refreshArgs);
+   }
+
+</code></pre><h3 id="342-hwc-client创建需要合成的hwc2layer">3.4.2 HWC client创建需要合成的HWC2::Layer</h3>
+<p>接3.4.1 来到CompositionEngine类的prepare方法</p>
+<pre><code>/*frameworks/native/services/surfaceflinger/CompositionEngine/src/CompositionEngine.cpp*/
+
+void CompositionEngine::present(CompositionRefreshArgs&amp; args) {
+    ATRACE_CALL();
+    ALOGV(__FUNCTION__);
+    ...
+    {
+        // latchedLayers is used to track the set of front-end layer state that
+        // has been latched across all outputs for the prepare step, and is not
+        // needed for anything else.
+        LayerFESet latchedLayers;
+
+        for (const auto&amp; output : args.outputs) {
+            // 1 计算各个区域大小以及创建hwc layer
+            output-&gt;prepare(args, latchedLayers);
+        }
+    }
+    // 2更新layerCompositionState
+    updateLayerStateFromFE(args);
+
+    for (const auto&amp; output : args.outputs) {
+        // 3
+        output-&gt;present(args);
+    }
+}
+
+void Output::prepare(const compositionengine::CompositionRefreshArgs&amp; refreshArgs,
+                     LayerFESet&amp; geomSnapshots) {
+    ATRACE_CALL();
+    ALOGV(__FUNCTION__);
+    // 1.1 
+    rebuildLayerStacks(refreshArgs, geomSnapshots);
+}
+
+/*frameworks/native/services/surfaceflinger/CompositionEngine/src/Output.cpp*/
+1.1 重新构建Layer栈计算可视区
+void Output::rebuildLayerStacks(const compositionengine::CompositionRefreshArgs&amp; refreshArgs,
+                                LayerFESet&amp; layerFESet) {
+    ATRACE_CALL();
+    ALOGV(__FUNCTION__);
+    ...
+    // Process the layers to determine visibility and coverage
+    compositionengine::Output::CoverageState coverage{layerFESet};
+    collectVisibleLayers(refreshArgs, coverage);
+    ...
+}
+
+void Output::collectVisibleLayers(const compositionengine::CompositionRefreshArgs&amp; refreshArgs,
+                                  compositionengine::Output::CoverageState&amp; coverage) {
+    // Evaluate the layers from front to back to determine what is visible. This
+    // also incrementally calculates the coverage information for each layer as
+    // well as the entire output.
+    //1.1.1 遍历当前所有layer
+    for (auto layer : reversed(refreshArgs.layers)) {
+        // Incrementally process the coverage for each layer
+        ensureOutputLayerIfVisible(layer, coverage);
         ...
     }
-    ```
+
+    setReleasedLayers(refreshArgs);
+
+    finalizePendingOutputLayers();
+}
+
+OutputLayer* ensureOutputLayer(std::optional&lt;size_t&gt; prevIndex,
+                                       const sp&lt;LayerFE&gt;&amp; layerFE) {
+
+            // 1.1.1.1 判断当前的outputlayer 集合里面有没有当前的layer，如果没有则新创建一个
+            auto outputLayer = (prevIndex &amp;&amp; *prevIndex &lt;= mCurrentOutputLayersOrderedByZ.size())
+                    ? std::move(mCurrentOutputLayersOrderedByZ[*prevIndex])
+                    : BaseOutput::createOutputLayer(layerFE);
+            auto result = outputLayer.get();
+            mPendingOutputLayersOrderedByZ.emplace_back(std::move(outputLayer));
+            return result;
+        }
 
 
-</code></pre>
+/*frameworks/native/services/surfaceflinger/CompositionEngine/src/Display.cpp*/
+
+std::unique_ptr&lt;compositionengine::OutputLayer&gt; Display::createOutputLayer(
+        const sp&lt;compositionengine::LayerFE&gt;&amp; layerFE) const {
+    auto result = impl::createOutputLayer(*this, layerFE);
+
+    if (result &amp;&amp; mId) {
+        auto&amp; hwc = getCompositionEngine().getHwComposer();
+        auto displayId = *mId;
+        // 1.1.1.1.1 根据当前layer所属的display创建一一对应的HWC2::layer
+        auto hwcLayer = std::shared_ptr&lt;HWC2::Layer&gt;(hwc.createLayer(displayId),
+                                                     [&amp;hwc, displayId](HWC2::Layer* layer) {
+                                                         hwc.destroyLayer(displayId, layer);
+                                                     });
+        // 更新state.hwc
+        result-&gt;setHwcLayer(std::move(hwcLayer));
+    }
+    return result;
+}
+</code></pre><h3 id="35通过hwc-client的hwc2layer调用hwc-servcie创建layer">3.5通过HWC client的HWC2::layer调用HWC servcie创建layer。</h3>
+<h4 id="351-接341的-11111来到outputcpp的present方法">3.5.1 接3.4.1的 1.1.1.1.1，来到output.cpp的present方法</h4>
+<p>最终来到ComposerHal的createLayer方法</p>
+<pre><code>/*frameworks/native/services/surfaceflinger/DisplayHardware/ComposerHal.cpp*/
+Error Composer::createLayer(Display display, Layer* outLayer)
+{
+    Error error = kDefaultError;
+    mClient-&gt;createLayer(display, BufferQueue::NUM_BUFFER_SLOTS,
+            [&amp;](const auto&amp; tmpError, const auto&amp; tmpLayer) {
+                error = tmpError;
+                if (error != Error::NONE) {
+                    return;
+                }
+
+                *outLayer = tmpLayer;
+            });
+
+    return error;
+}
+</code></pre><h4 id="352-接351调到hidl-so接口库的hwchalh中createlayer方法">3.5.2 接3.5.1，调到hidl so接口库的HwcHal.h中createLayer方法</h4>
+<pre><code>/*hardware/interfaces/graphics/composer/2.1/utils/passthrough/include/composer-passthrough/2.1/HwcHal.h*/
+
+    Error createLayer(Display display, Layer* outLayer) override {
+        int32_t err = mDispatch.createLayer(mDevice, display, outLayer);
+        return static_cast&lt;Error&gt;(err);
+    }
+
+</code></pre><h4 id="353-接352调到hwc-service厂商实现库中hwc_sessioncpp的pcreatelayer方法">3.5.3 接3.5.2，调到HWC Service厂商实现库中hwc_session.cpp的pcreateLayer方法</h4>
+<pre><code>/*hardware/qcom/sdm845/display/sdm/libs/hwc2/hwc_session.cpp*/
+int32_t HWCSession::CreateLayer(hwc2_device_t *device, hwc2_display_t display,
+                                hwc2_layer_t *out_layer_id) {
+  if (!out_layer_id) {
+    return  HWC2_ERROR_BAD_PARAMETER;
+  }
+
+  return CallDisplayFunction(device, display, &amp;HWCDisplay::CreateLayer, out_layer_id);
+}
+</code></pre><h3 id="36-接34output类的presentargs方法最终合成合成篇讲解">3.6 接3.4output类的present(args)方法，最终合成。（合成篇讲解）</h3>
+<p>有2种合成类型，一是client合成（gpu合成，会单独创建一个FramebufferSuface队列，直接绘制多个buffer到屏幕，最终给到HWC和其他overlayer一起合成，会单独讲解），两一个是hwc合成。</p>
+<pre><code>void Output::present(const compositionengine::CompositionRefreshArgs&amp; refreshArgs) {
+    ATRACE_CALL();
+    ......
+    //1.告知HWC service有哪些layer要参与合成
+    updateAndWriteCompositionState(refreshArgs);
+    ......
+    beginFrame();
+    prepareFrame();
+    ......
+    finishFrame(refreshArgs);
+    //2.这里会调用到HWC service的接口去present display合成画面
+    postFramebuffer();
+}
+void Output::postFramebuffer() {
+    ......
+    auto frame = presentAndGetFrameFences();
+    ......
+}
+
+/*frameworks/native/services/surfaceflinger/DisplayHardware/HWComposer.cpp*/
+
+status_t HWComposer::presentAndGetReleaseFences(DisplayId displayId) {
+    ATRACE_CALL();
+    ......
+    //2.1 送去HWC service合成
+    auto error = hwcDisplay-&gt;present(&amp;displayData.lastPresentFence);
+    ......
+    std::unordered_map&lt;HWC2::Layer*,sp&lt;Fence&gt;&gt; releaseFences;
+    error = hwcDisplay-&gt;getReleaseFences(&amp;releaseFences);
+    RETURN_IF_HWC_ERROR_FOR(&quot;getReleaseFences&quot;, error, displayId, UNKNOWN_ERROR);
+
+    displayData.releaseFences = std::move(releaseFences);//获取releaseFence, 以便通知到各个Slot, buffer被release后会通过dequeueBuffer给到应用，应用在绘图前会等待releaseFence
+    ......
+}
+
+</code></pre><h3 id="37-hwc-server调用drm创建planes待继续学习">3.7 HWC server调用drm创建planes待继续学习。</h3>
+
 
                 
                 

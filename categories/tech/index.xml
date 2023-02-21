@@ -17,7 +17,7 @@
       <pubDate>Sat, 04 Feb 2023 00:00:00 +0000</pubDate>
       
       <guid>https://ywqyunshan.github.io/2022/02/04/</guid>
-      <description>对于图形系统而言，首先要有一个窗口，接下来在窗口中拿到buffer去渲染，最后合成图层并送显，本片主要讲一下，如何获取一个窗口，当然Andr</description>
+      <description>对于图形系统而言， 首先要有一个窗口（自上而下每层对应的概念不同），接下来在窗口中拿到buffer去渲染，最后合成图层并送显，本片主要讲一下，</description>
     </item>
     
     <item>
