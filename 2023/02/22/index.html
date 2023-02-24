@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="FQ Blog">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="https://ywqyunshan.github.io//img/home-bg-jeep.jpg">
+    <meta property="twitter:image" content="https://ywqyunshan.github.io//img/home-bg-jeep.jpg" />
+    
+
+    
+    <meta name="title" content="Android图形系统-渲染子系统" />
+    <meta property="og:title" content="Android图形系统-渲染子系统" />
+    <meta property="twitter:title" content="Android图形系统-渲染子系统" />
+    
+
+    
+    <meta name="description" content="">
+    <meta property="og:description" content="" />
+    <meta property="twitter:description" content="" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="iigeoywq, 博客, 个人网站, 图形学, GIS, 座舱, 车载, Andorid, 系统">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>Android图形系统-渲染子系统 | </title>
+
+    <link rel="canonical" href="/2023/02/22/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link href="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@5.15.1/css/all.css" rel="stylesheet" type="text/css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">FQ Blog</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/tech">tech</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/archive/">ARCHIVE</a></li>
+                    
+                        <li><a href="/notes/">NOTES</a></li>
+                    
+                        <li><a href="/about/">ABOUT</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/home-bg-jeep.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/istio" title="Istio">
+                            Istio
+                        </a>
+                        
+                    </div>
+                    <h1>Android图形系统-渲染子系统</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                    &#34;iigeoywq button&#34;
+                             
+                            on 
+                            Wednesday, February 22, 2023
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <blockquote>
+<p>渲染主要分申请buffer，cpu/gpu渲染和提交buffer。
+本篇主要讲一下buffer的申请，以及渲染，提交buffer的流程是一样的。</p>
+</blockquote>
+<h2 id="一-渲染子系统架构">一 渲染子系统架构</h2>
+<h2 id="二-源码目录">二 源码目录</h2>
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-lboi{border-color:inherit;text-align:left;vertical-align:middle}
+.tg .tg-uzvj{border-color:inherit;font-weight:bold;text-align:center;vertical-align:middle}
+.tg .tg-7btt{border-color:inherit;font-weight:bold;text-align:center;vertical-align:top}
+.tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
+.tg .tg-0lax{text-align:left;vertical-align:top}
+</style>
+<table class="tg" style="undefined;table-layout: fixed; width: 1530px">
+<colgroup>
+<col style="width: 100.333333px">
+<col style="width: 116.333333px">
+<col style="width: 366.333333px">
+<col style="width: 311.333333px">
+<col style="width: 68.333333px">
+<col style="width: 162.333333px">
+<col style="width: 284.333333px">
+<col style="width: 120.333333px">
+</colgroup>
+<thead>
+  <tr>
+    <th class="tg-uzvj" colspan="2" rowspan="2">模块</th>
+    <th class="tg-7btt" colspan="2">源码路径</th>
+    <th class="tg-uzvj">进程</th>
+    <th class="tg-7btt" colspan="2">类库</th>
+    <th class="tg-uzvj" rowspan="2">备注</th>
+  </tr>
+  <tr>
+    <th class="tg-uzvj">Android实现</th>
+    <th class="tg-uzvj">厂商（高通）实现</th>
+    <th class="tg-0pky"></th>
+    <th class="tg-uzvj">Android</th>
+    <th class="tg-uzvj">厂商（高通）</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-0pky" colspan="2">APP层</td>
+    <td class="tg-0pky" colspan="2"></td>
+    <td class="tg-0pky" rowspan="5">主线程</td>
+    <td class="tg-0pky" colspan="2">APK</td>
+    <td class="tg-0pky"></td>
+  </tr>
+  <tr>
+    <td class="tg-lboi" colspan="2" rowspan="2">Java Framework层</td>
+    <td class="tg-0pky" colspan="2">frameworks/base/core/java/android/view/Surface.java<br></td>
+    <td class="tg-0pky" colspan="2" rowspan="2">system/framework/framework.jar</td>
+    <td class="tg-0pky"></td>
+  </tr>
+  <tr>
+    <td class="tg-0pky" colspan="2">frameworks/base/core/java/android/view/ThreadedRenderer.java<br>frameworks/base/graphics/java/android/graphics/RenderNode.java<br>frameworks/base/graphics/java/android/graphics/HardwareRenderer.java<br>frameworks/base/graphics/java/android/graphics/RenderNode.java<br>frameworks/base/graphics/java/android/graphics/HardwareRenderer.java</td>
+    <td class="tg-0pky"></td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">Native Framework层</td>
+    <td class="tg-0pky">Jni</td>
+    <td class="tg-0pky" colspan="2">frameworks/base/libs/hwui/jni/android_graphics_HardwareRenderer.cpp<br></td>
+    <td class="tg-0pky" colspan="2" rowspan="3">system/lib64/libhwui.so</td>
+    <td class="tg-0pky"></td>
+  </tr>
+  <tr>
+    <td class="tg-lboi" rowspan="6">Native Framework层<br></td>
+    <td class="tg-0pky" rowspan="2">hwui</td>
+    <td class="tg-0pky" colspan="2"><br>frameworks/base/libs/hwui/renderthread/RenderProxy.cpp<br>frameworks/base/libs/hwui/renderthread/DrawFrameTask.cpp<br><br></td>
+    <td class="tg-0pky"></td>
+  </tr>
+  <tr>
+    <td class="tg-0lax" colspan="2">frameworks/base/libs/hwui/renderthread/CanvasContext.cpp</td>
+    <td class="tg-0lax" rowspan="4">Render线程</td>
+    <td class="tg-0lax"></td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">libgui</td>
+    <td class="tg-0pky" colspan="2">frameworks/native/libs/gui/Surface.cpp<br></td>
+    <td class="tg-0pky" colspan="2">system/lib64/libhgui.so</td>
+    <td class="tg-0pky"></td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">skia</td>
+    <td class="tg-0pky" colspan="2">external/skia/<br></td>
+    <td class="tg-0pky" colspan="2">libskia.so</td>
+    <td class="tg-0pky"></td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">opengl</td>
+    <td class="tg-0pky" colspan="2">frameworks/native/opengl/libs/(EGL wrapper)<br></td>
+    <td class="tg-0pky">libGLESv1_CM.so<br>libGLESv2.so<br>libGLESv3.so</td>
+    <td class="tg-0pky">/vendor/lib64/egl/libGLESv1_CM_adreno.so<br>/vendor/lib64/egl/libGLESv2_adreno.so<br>/vendor/lib64/egl/libEGL_adreno.so<br></td>
+    <td class="tg-0pky"></td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">Sever-SF</td>
+    <td class="tg-0pky" colspan="2">frameworks/native/libs/gui/BufferQueueProducer.cpp</td>
+    <td class="tg-0pky"></td>
+    <td class="tg-0pky" colspan="2">/system/bin/surfacefinger</td>
+    <td class="tg-0pky"></td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">Hal层</td>
+    <td class="tg-0pky">Client-libui</td>
+    <td class="tg-0pky" colspan="2">frameworks/native/libs/ui/GraphicBuffer.cpp<br> </td>
+    <td class="tg-0pky"></td>
+    <td class="tg-0pky" colspan="2">system/lib64/libui.so</td>
+    <td class="tg-0pky"></td>
+  </tr>
+  <tr>
+    <td class="tg-0pky"></td>
+    <td class="tg-0pky">Server-galloc</td>
+    <td class="tg-0pky" colspan="2">hardware/interfaces/graphics/mapper/2.1/default<br></td>
+    <td class="tg-0pky"></td>
+    <td class="tg-0pky" colspan="2">vendor/lib64/hw/android.hardware.graphics.mapper@2.1-impl.so<br>system/lib64/android.hardware.graphics.mapper@2.1.so</td>
+    <td class="tg-0pky"></td>
+  </tr>
+  <tr>
+    <td class="tg-0pky"></td>
+    <td class="tg-0pky">galloc实现</td>
+    <td class="tg-0pky">hardware/libhardware/modules/galloc/mapper.cpp</td>
+    <td class="tg-0pky"><br>hardware/qcom/sdm845/display/gralloc/</td>
+    <td class="tg-0pky"></td>
+    <td class="tg-0pky">gralloc.default.so</td>
+    <td class="tg-0pky">vendor/lib64/hw/gralloc.sdmxxx.so<br></td>
+    <td class="tg-0pky">高通的so都是闭源的，高通只开放了部分源码仅供参考，以高通官方文档为准</td>
+  </tr>
+  <tr>
+    <td class="tg-0pky"></td>
+    <td class="tg-0pky">共享内存层</td>
+    <td class="tg-0pky" colspan="2">system/memory/libion/</td>
+    <td class="tg-0pky"></td>
+    <td class="tg-0pky" colspan="2">system/lib64/libion.so</td>
+    <td class="tg-0pky"></td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">内核层</td>
+    <td class="tg-0pky">DRM</td>
+    <td class="tg-0pky">待确定</td>
+    <td class="tg-0pky">common/drivers/staging/android/ion</td>
+    <td class="tg-0pky"></td>
+    <td class="tg-0pky">待确定</td>
+    <td class="tg-0pky">待确定</td>
+    <td class="tg-0pky"></td>
+  </tr>
+</tbody>
+</table>
+<h2 id="三-源码分析">三 源码分析</h2>
+<h3 id="31-java层的surface传入native层并转换为anativewindow和eglsurface对象">3.1 java层的Surface传入native层，并转换为ANativeWindow和EglSurface对象</h3>
+<p>先做个准备工作，收到vsync-app通知后，在<a href="">Android图形系统-窗口子系统</a>篇3.2.2的第2个步骤，将app进程和wms进程共享的surface传入</p>
+<pre><code>/*frameworks/base/core/java/android/view/ThreadedRenderer.java*/
+boolean initialize(Surface surface) throws OutOfResourcesException {
+    ......
+    setSurface(surface);
+    ......
+}
+
+/*frameworks/base/libs/hwui/jni/android_graphics_HardwareRenderer.cpp*/
+static void android_view_ThreadedRenderer_setSurface(JNIEnv* env, jobject clazz,
+        jlong proxyPtr, jobject jsurface, jboolean discardBuffer) {
+    RenderProxy* proxy = reinterpret_cast&lt;RenderProxy*&gt;(proxyPtr);
+    ......
+    proxy-&gt;setSurface(window, enableTimeout);
+    ......
+}
+
+/*frameworks/base/libs/hwui/renderthread/RenderProxy.cpp*/
+void RenderProxy::setSurface(ANativeWindow* window, bool enableTimeout) {
+    ANativeWindow_acquire(window);
+    mRenderThread.queue().post([this, win = window, enableTimeout]() mutable {
+        mContext-&gt;setSurface(win, enableTimeout);
+        ANativeWindow_release(win);
+    });
+}
+
+/*frameworks/base/libs/hwui/renderthread/CanvasContext.cpp*/
+void CanvasContext::setSurface(ANativeWindow* window, bool enableTimeout) {
+    ATRACE_CALL();
+
+    if (window) {
+        mNativeSurface = std::make_unique&lt;ReliableSurface&gt;(window);
+        mNativeSurface-&gt;init();
+        ....
+    } else {
+        mNativeSurface = nullptr;
+    }
+    setupPipelineSurface();
+}
+
+void CanvasContext::setupPipelineSurface() {
+    bool hasSurface = mRenderPipeline-&gt;setSurface(
+            mNativeSurface ? mNativeSurface-&gt;getNativeWindow() : nullptr, mSwapBehavior);
+    ....
+}
+
+/*frameworks/base/libs/hwui/pipeline/skia/SkiaOpenGLPipeline.cpp*/
+bool SkiaOpenGLPipeline::setSurface(ANativeWindow* surface, SwapBehavior swapBehavior) {
+    if (mEglSurface != EGL_NO_SURFACE) {
+        mEglManager.destroySurface(mEglSurface);
+        mEglSurface = EGL_NO_SURFACE;
+    }
+
+    if (surface) {
+        mRenderThread.requireGlContext();
+        auto newSurface = mEglManager.createSurface(surface, mColorMode, mSurfaceColorSpace);
+        if (!newSurface) {
+            return false;
+        }
+        //
+        mEglSurface = newSurface.unwrap();
+    }
+    ...
+    return false;
+}
+</code></pre><h3 id="32-主线程构建displaylist">3.2 主线程构建DisplayList</h3>
+<p>收到vsync-app信号后，接<a href="">Android图形系统-窗口子系统</a>篇3.2.2的第3个步骤,来到ViewRootImpl的draw方法，默认是打开硬件加速的，进入ThreadedRenderer（注意这里还是主线程）构建DisplayList。</p>
+<pre><code>/*frameworks/base/core/java/android/view/ViewRootImpl.java*/
+private boolean draw(boolean fullRedrawNeeded) {
+    ...
+    if (mAttachInfo.mThreadedRenderer != null &amp;&amp; mAttachInfo.mThreadedRenderer.isEnabled()) {
+        ...
+        // 走gpu绘制的流程
+        mAttachInfo.mThreadedRenderer.draw(mView, mAttachInfo, this);
+    } else {
+        // 否则走软件绘制的流程
+        if (!drawSoftware(surface, mAttachInfo, xOffset, yOffset,
+                        scalingRequired, dirty, surfaceInsets)) {
+                    return false;
+         }
+    }
+}
+</code></pre><h4 id="321-threadedrenderer类构建displaylist">3.2.1 ThreadedRenderer类构建DisplayList</h4>
+<pre><code>/*frameworks/base/core/java/android/view/ThreadedRenderer.java*/
+
+void draw(View view, AttachInfo attachInfo, DrawCallbacks callbacks) {
+    ...
+    // 1.从DecorView根节点出发，递归遍历View控件树，记录每个View节点的绘制操作命令，完成绘制操作命令树的构建
+    updateRootDisplayList(view, callbacks);
+    ...
+    // 2.JNI调用同步Java层构建的绘制命令树到Native层的RenderThread渲染线程，并唤醒渲染线程利用OpenGL执行渲染任务；
+    int syncResult = syncAndDrawFrame(choreographer.mFrameInfo);
+    ...
+}
+
+private void updateRootDisplayList(View view, DrawCallbacks callbacks) {
+    ......
+    updateViewTreeDisplayList(view);
+    ......
+}
+private void updateViewTreeDisplayList(View view) {
+    ......
+    //这里开始调用DecorView的updateDisplayListIfDirty
+    view.updateDisplayListIfDirty();
+    ......
+}
+
+/*frameworks/base/core/java/android/view/View.java*/
+public RenderNode updateDisplayListIfDirty() {
+     ...
+     // 1.利用`View`对象构造时创建的`RenderNode`获取一个`SkiaRecordingCanvas`“画布”；
+     final RecordingCanvas canvas = renderNode.beginRecording(width, height);
+     try {
+         ...
+         if ((mPrivateFlags &amp; PFLAG_SKIP_DRAW) == PFLAG_SKIP_DRAW) {
+              // 如果仅仅是ViewGroup，并且自身不用绘制，直接递归子View
+              dispatchDraw(canvas);
+              ...
+         } else {
+              // 2.利用SkiaRecordingCanvas，在每个子View控件的onDraw绘制函数中调用drawLine、drawRect等绘制操作时，创建对应的DisplayListOp绘制命令，并缓存记录到其内部的SkiaDisplayList持有的DisplayListData中；
+              draw(canvas);
+         }
+     } finally {
+         // 3.将包含有`DisplayListOp`绘制命令缓存的`SkiaDisplayList`对象设置填充到`RenderNode`中；
+         renderNode.endRecording();
+         ...
+     }
+     ...
+}
+
+public void draw(Canvas canvas) {
+    ...
+    // draw the content(View自己实现的onDraw绘制，由应用开发者自己实现)
+    onDraw(canvas);
+    ...
+    // draw the children
+    dispatchDraw(canvas);
+    ...
+}
+
+/*frameworks/base/graphics/java/android/graphics/RenderNode.java*/
+public void endRecording() {
+        ...
+        // 从SkiaRecordingCanvas中获取SkiaDisplayList对象
+        long displayList = canvas.finishRecording();
+        // 将SkiaDisplayList对象填充到RenderNode中
+        nSetDisplayList(mNativeRenderNode, displayList);
+        canvas.recycle();
+}
+</code></pre><h3 id="33-renderthread线程渲染">3.3 renderthread线程渲染</h3>
+<p>接3.2.1 第二步来到HardwareRenderer的syncAndDrawFrame方法，并jni调用进入hwui库。</p>
+<pre><code>/*frameworks/base/graphics/java/android/graphics/HardwareRenderer.java*/
+public int syncAndDrawFrame(@NonNull FrameInfo frameInfo) {
+    // JNI调用native层的相关函数
+    return nSyncAndDrawFrame(mNativeProxy, frameInfo.frameInfo, frameInfo.frameInfo.length);
+}
+
+/*frameworks/base/libs/hwui/jni/android_graphics_HardwareRenderer.cpp*/
+static int android_view_ThreadedRenderer_syncAndDrawFrame(JNIEnv* env, jobject clazz,
+        jlong proxyPtr, jlongArray frameInfo, jint frameInfoSize) {
+    ...
+    RenderProxy* proxy = reinterpret_cast&lt;RenderProxy*&gt;(proxyPtr);
+    env-&gt;GetLongArrayRegion(frameInfo, 0, frameInfoSize, proxy-&gt;frameInfo());
+    return proxy-&gt;syncAndDrawFrame();
+}
+
+/*frameworks/base/libs/hwui/renderthread/RenderProxy.cpp*/
+int RenderProxy::syncAndDrawFrame() {
+    // 唤醒RenderThread渲染线程，执行DrawFrame绘制任务
+    return mDrawFrameTask.drawFrame();
+}
+
+/*frameworks/base/libs/hwui/renderthread/DrawFrameTask.cpp*/
+int DrawFrameTask::drawFrame() {
+    ...
+    postAndWait();
+    ...
+}
+
+void DrawFrameTask::postAndWait() {
+    AutoMutex _lock(mLock);
+    // 向RenderThread渲染线程的MessageQueue消息队列放入一个待执行任务，以将其唤醒执行run函数
+    mRenderThread-&gt;queue().post([this]() { run(); });
+    // UI线程暂时进入wait等待状态
+    mSignal.wait(mLock);
+}
+</code></pre><h4 id="331-进入renderthread线程">3.3.1 进入Renderthread线程</h4>
+<pre><code>/*frameworks/base/libs/hwui/renderthread/DrawFrameTask.cpp*/
+void DrawFrameTask::run() {
+    // 原生标识一帧渲染绘制任务的systrace tag
+    ATRACE_NAME(&quot;DrawFrame&quot;);
+    ...
+    {
+        TreeInfo info(TreeInfo::MODE_FULL, *mContext);
+        //1.将UI线程构建的DisplayListOp绘制命令树同步到RenderThread渲染线程
+        canUnblockUiThread = syncFrameState(info);
+        ...
+    }
+    ...
+    if (CC_LIKELY(canDrawThisFrame)) {
+        // 2.执行draw渲染绘制动作
+        context-&gt;draw();
+    } else {
+        ...
+    }
+    ...
+}
+
+/*frameworks/base/libs/hwui/renderthread/CanvasContext.cpp*/
+void CanvasContext::draw() {
+    ......
+    // 2.1 这里会通过3.1小节传入的Surface 向galloc dequeueBuffer
+    Frame frame = mRenderPipeline-&gt;getFrame();
+    ......
+    // 2.2 调用OpenGL库使用GPU，按照构建好的绘制命令完成界面的渲染
+    bool drew = mRenderPipeline-&gt;draw(frame, windowDirty, dirty, mLightGeometry, &amp;mLayerUpdateQueue,
+                                      mContentDrawBounds, mOpaque, mLightInfo, mRenderNodes,
+                                      &amp;(profiler()));
+    ......
+    waitOnFences();
+    ......
+    // 2.3 这里最终用到Surface的queueBuffer
+    bool didSwap =
+            mRenderPipeline-&gt;swapBuffers(frame, drew, windowDirty, mCurrentFrameInfo, &amp;requireSwap);
+    ......
+}
+</code></pre><h3 id="34-申请buffer">3.4 申请buffer</h3>
+<h4 id="341-调用gl库">3.4.1 调用gl库</h4>
+<p>接 3.3.1小节的2.1 来到SkiaOpenGLPipeline或者SkiaVulkanPipeline类的getFrame()方法。</p>
+<pre><code>/*frameworks/base/libs/hwui/pipeline/skia/SkiaOpenGLPipeline.cpp*/
+
+Frame SkiaOpenGLPipeline::getFrame() {
+    LOG_ALWAYS_FATAL_IF(mEglSurface == EGL_NO_SURFACE,
+                        &quot;drawRenderNode called on a context with no surface!&quot;);
+    return mEglManager.beginFrame(mEglSurface);
+}
+
+/*frameworks/base/libs/hwui/renderthread/EglManager.cpp*/
+Frame EglManager::beginFrame(EGLSurface surface) {
+    LOG_ALWAYS_FATAL_IF(surface == EGL_NO_SURFACE, &quot;Tried to beginFrame on EGL_NO_SURFACE!&quot;);
+
+    ...
+    makeCurrent(surface);
+    ...
+    frame.mBufferAge = queryBufferAge(surface);
+    eglBeginFrame(mEglDisplay, surface);
+    return frame;
+}
+
+bool EglManager::makeCurrent(EGLSurface surface, EGLint* errOut, bool force) {
+    if (!force &amp;&amp; isCurrent(surface)) return false;
+
+    if (surface == EGL_NO_SURFACE) {
+        // Ensure we always have a valid surface &amp; context
+        surface = mPBufferSurface;
+    }
+    // 进入egl库
+    if (!eglMakeCurrent(mEglDisplay, surface, surface, mEglContext)) {
+        ....
+    }
+    ...
+    return true;
+}
+
+//进入egl库
+/*frameworks/native/opengl/libs/EGL/eglApi.cpp*/
+EGLBoolean eglMakeCurrent(EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLContext ctx) {
+    clearError();
+
+    egl_connection_t* const cnx = &amp;gEGLImpl;
+    return cnx-&gt;platform.eglMakeCurrent(dpy, draw, read, ctx);
+}
+
+//最终进入opengl实现库（厂商实现），andorid有个开源实现库libagl，但是在11及以上删除了。
+这里按照Android 10的libagl看一下实现
+/*frameworks/native/opengl/libagl/egl.cpp*/ （Android 10 及以下libagl源码目录）
+EGLBoolean eglMakeCurrent(  EGLDisplay dpy, EGLSurface draw,
+                            EGLSurface read, EGLContext ctx)
+{
+    ....
+    if (d-&gt;connect() == EGL_FALSE) {
+                    return EGL_FALSE;
+    }
+    ...
+    return setError(EGL_BAD_ACCESS, EGL_FALSE);
+}
+
+EGLBoolean egl_window_surface_v2_t::connect() 
+{
+    // we're intending to do software rendering
+    native_window_set_usage(nativeWindow, 
+            GRALLOC_USAGE_SW_READ_OFTEN | GRALLOC_USAGE_SW_WRITE_OFTEN);
+    ...
+    // dequeue a buffer
+    int fenceFd = -1;
+    //申请buffer，开始进入libgui库，这里的nativewindow就是3.1那一步传入的surface转换来的。
+    if (nativeWindow-&gt;dequeueBuffer(nativeWindow, &amp;buffer,
+            &amp;fenceFd) != NO_ERROR) {
+        return setError(EGL_BAD_ALLOC, EGL_FALSE);
+    }
+    ...
+    return EGL_TRUE;
+}
+</code></pre><h4 id="342-调用libgui库并跨进程创建buffer">3.4.2 调用libgui库并跨进程创建buffer</h4>
+<p>参考这篇文章的<a href="ttps://www.jianshu.com/p/3c61375cc15b">Android画面显示流程分析(3)</a>3.2，先进入libgui和SF进程建立连接，并最终来到surfaceflinger进程，这里还可以看韦东山课程的这张图
+
+  <img src="/img/buffer%E5%88%9B%E5%BB%BA.jpg" alt="Buffer申请">
+
+</p>
+<pre><code>/*frameworks/native/libs/gui/BufferQueueProducer.cpp */
+status_t BufferQueueProducer::dequeueBuffer(int* outSlot, sp&lt;android::Fence&gt;* outFence,
+                                            uint32_t width, uint32_t height, PixelFormat format,
+                                            uint64_t usage, uint64_t* outBufferAge,
+                                            FrameEventHistoryDelta* outTimestamps) {
+    if ((buffer == NULL) ||
+        buffer-&gt;needsReallocation(width, height, format, BQ_LAYER_COUNT, usage))//检查是否已分配了GraphicBuffer
+    {
+        ......
+        returnFlags |= BUFFER_NEEDS_REALLOCATION;//发现需要分配buffer,置个标记
+    }
+    ......
+    if (returnFlags &amp; BUFFER_NEEDS_REALLOCATION) {
+        ......
+        //新创建一个新的GraphicBuffer给到对应的slot
+        sp&lt;GraphicBuffer&gt; graphicBuffer = new GraphicBuffer(
+               width, height, format, BQ_LAYER_COUNT, usage,
+               {mConsumerName.string(), mConsumerName.size()});
+        ......
+               mSlots[*outSlot].mGraphicBuffer = graphicBuffer;//把GraphicBuffer给到对应的slot
+        ......
+    }
+    ......
+    return returnFlags;//注意在应用第一次请求buffer, dequeueBuffer返回时对应的GraphicBuffer已经创建完成并给到了对应的slot上，但返回给应用的flags里还是带有BUFFER_NEEDS_REALLOCATION标记的
+}
+</code></pre><h4 id="343-调用libui库">3.4.3 调用libui库</h4>
+<p>接3.4.2 来到GraphicBuffer的构造函数</p>
+<pre><code>/*frameworks/native/libs/ui/GraphicBuffer.cpp*/
+GraphicBuffer::GraphicBuffer(uint32_t inWidth, uint32_t inHeight, PixelFormat inFormat,
+                             uint32_t inLayerCount, uint64_t inUsage, std::string requestorName)
+      : GraphicBuffer() {
+    mInitCheck = initWithSize(inWidth, inHeight, inFormat, inLayerCount, inUsage,
+                              std::move(requestorName));
+}
+
+status_t GraphicBuffer::initWithSize(uint32_t inWidth, uint32_t inHeight,
+        PixelFormat inFormat, uint32_t inLayerCount, uint64_t inUsage,
+        std::string requestorName)
+{
+    //1.创建GraphicBufferAllocator最终通过hal层调用galloc模块
+    GraphicBufferAllocator&amp; allocator = GraphicBufferAllocator::get();
+    uint32_t outStride = 0;
+    //2.分配buffer，最终也调到hal层的galloc模块
+    status_t err = allocator.allocate(inWidth, inHeight, inFormat, inLayerCount,
+            inUsage, &amp;handle, &amp;outStride, mId,
+            std::move(requestorName));
+    if (err == NO_ERROR) {
+        mBufferMapper.getTransportSize(handle, &amp;mTransportNumFds, &amp;mTransportNumInts);
+
+        width = static_cast&lt;int&gt;(inWidth);
+        height = static_cast&lt;int&gt;(inHeight);
+        format = inFormat;
+        layerCount = inLayerCount;
+        usage = inUsage;
+        usage_deprecated = int(usage);
+        stride = static_cast&lt;int&gt;(outStride);
+    }
+    return err;
+}
+
+/*frameworks/native/libs/ui/GraphicBufferAllocator.cpp*/
+
+GraphicBufferAllocator::GraphicBufferAllocator() : mMapper(GraphicBufferMapper::getInstance()) {
+    //1.1 创建Gralloc4Allocator对象
+    mAllocator = std::make_unique&lt;const Gralloc4Allocator&gt;(
+            reinterpret_cast&lt;const Gralloc4Mapper&amp;&gt;(mMapper.getGrallocMapper()));
+    if (mAllocator-&gt;isLoaded()) {
+        return;
+    }
+    mAllocator = std::make_unique&lt;const Gralloc3Allocator&gt;(
+            reinterpret_cast&lt;const Gralloc3Mapper&amp;&gt;(mMapper.getGrallocMapper()));
+    if (mAllocator-&gt;isLoaded()) {
+        return;
+    }
+    mAllocator = std::make_unique&lt;const Gralloc2Allocator&gt;(
+            reinterpret_cast&lt;const Gralloc2Mapper&amp;&gt;(mMapper.getGrallocMapper()));
+    if (mAllocator-&gt;isLoaded()) {
+        return;
+    }
+
+    LOG_ALWAYS_FATAL(&quot;gralloc-allocator is missing&quot;);
+}
+
+/* frameworks/native/libs/ui/Gralloc4.cpp*/
+Gralloc4Mapper::Gralloc4Mapper() {
+    //1.1.1 跨进程调用hidl服务
+    mMapper = IMapper::getService();
+    if (mMapper == nullptr) {
+        ALOGI(&quot;mapper 4.x is not supported&quot;);
+        return;
+    }
+    if (mMapper-&gt;isRemote()) {
+        LOG_ALWAYS_FATAL(&quot;gralloc-mapper must be in passthrough mode&quot;);
+    }
+}
+最终调到hal层，并去指定目录下（高通的/vendor/lib64/hw/galloc.xxx.so）下加载厂商的动态库
+高通galloc库的源码（hardware/qcom/sdm845/display/gralloc/）
+/*hardware/interfaces/graphics/mapper/4.0/IMapper.hal*/
+
+</code></pre><h4 id="344-hidl跨进程调用厂商动态库打开ion驱动分配buffer">3.4.4 hidl跨进程调用厂商动态库打开ion驱动分配buffer</h4>
+<pre><code>/*hardware/qcom/sdm845/display/gralloc/gr_ion_alloc.cpp*/
+int IonAlloc::AllocBuffer(AllocData *data) {
+  ATRACE_CALL();
+  int err = 0;
+  struct ion_handle_data handle_data;
+  struct ion_fd_data fd_data;
+  struct ion_allocation_data ion_alloc_data;
+
+  ion_alloc_data.len = data-&gt;size;
+  ion_alloc_data.align = data-&gt;align;
+  ion_alloc_data.heap_id_mask = data-&gt;heap_id;
+  ion_alloc_data.flags = data-&gt;flags;
+  ion_alloc_data.flags |= data-&gt;uncached ? 0 : ION_FLAG_CACHED;
+  std::string tag_name{};
+  if (ATRACE_ENABLED()) {
+    tag_name = &quot;ION_IOC_ALLOC size: &quot; + std::to_string(data-&gt;size);
+  }
+
+  ATRACE_BEGIN(tag_name.c_str());
+  //调用libion库打开ion驱动
+  if (ioctl(ion_dev_fd_, INT(ION_IOC_ALLOC), &amp;ion_alloc_data)) {
+    err = -errno;
+    ALOGE(&quot;ION_IOC_ALLOC failed with error - %s&quot;, strerror(errno));
+    return err;
+  }
+  ATRACE_END();
+
+  fd_data.handle = ion_alloc_data.handle;
+  handle_data.handle = ion_alloc_data.handle;
+  ATRACE_BEGIN(&quot;ION_IOC_MAP&quot;);
+  if (ioctl(ion_dev_fd_, INT(ION_IOC_MAP), &amp;fd_data)) {
+    err = -errno;
+    ALOGE(&quot;%s: ION_IOC_MAP failed with error - %s&quot;, __FUNCTION__, strerror(errno));
+    ioctl(ion_dev_fd_, INT(ION_IOC_FREE), &amp;handle_data);
+    return err;
+  }
+  ATRACE_END();
+
+  data-&gt;fd = fd_data.fd;
+  data-&gt;ion_handle = handle_data.handle;
+  ALOGD_IF(DEBUG, &quot;ion: Allocated buffer size:%zu fd:%d handle:0x%x&quot;, ion_alloc_data.len, data-&gt;fd,
+           data-&gt;ion_handle);
+
+  return 0;
+}
+</code></pre><h4 id="345-打开ion驱动最终调用到drm分享buffer">3.4.5 打开ion驱动最终调用到drm分享buffer</h4>
+<pre><code>/*system/memory/libion/ion.c */
+int ion_alloc(int fd, size_t len, size_t align, unsigned int heap_mask, unsigned int flags,
+              ion_user_handle_t* handle) {
+    int ret = 0;
+
+    if ((handle == NULL) || (!ion_is_legacy(fd))) return -EINVAL;
+
+    struct ion_allocation_data data = {
+        .len = len, .align = align, .heap_id_mask = heap_mask, .flags = flags,
+    };
+
+    ret = ion_ioctl(fd, ION_IOC_ALLOC, &amp;data);
+    if (ret &lt; 0) return ret;
+
+    *handle = data.handle;
+
+    return ret;
+}
+</code></pre><h3 id="35-绘制">3.5 绘制</h3>
+<p>接3.3.1小节的2.2 来到SkiaOpenGLPipeline或者SkiaVulkanPipeline类的getFrame()方法。</p>
+<pre><code>/*frameworks/base/libs/hwui/pipeline/skia/SkiaOpenGLPipeline.cpp*/
+bool SkiaOpenGLPipeline::draw(const Frame&amp; frame, const SkRect&amp; screenDirty, const SkRect&amp; dirty,
+                              const LightGeometry&amp; lightGeometry,
+                              LayerUpdateQueue* layerUpdateQueue, const Rect&amp; contentDrawBounds,
+                              bool opaque, const LightInfo&amp; lightInfo,
+                              const std::vector&lt;sp&lt;RenderNode&gt;&gt;&amp; renderNodes,
+                              FrameInfoVisualizer* profiler) {
+    ......
+    renderFrame(*layerUpdateQueue, dirty, renderNodes, opaque, contentDrawBounds, surface,
+                SkMatrix::I());
+    ....
+
+    return true;
+}
+
+
+void SkiaPipeline::renderFrame(const LayerUpdateQueue&amp; layers, const SkRect&amp; clip,
+                               const std::vector&lt;sp&lt;RenderNode&gt;&gt;&amp; nodes, bool opaque,
+                               const Rect&amp; contentDrawBounds, sk_sp&lt;SkSurface&gt; surface,
+                               const SkMatrix&amp; preTransform) {
+    ......
+
+    renderFrameImpl(clip, nodes, opaque, contentDrawBounds, canvas, preTransform);
+
+    endCapture(surface.get());
+    ....
+    if (CC_UNLIKELY(Properties::debugOverdraw)) {
+        renderOverdraw(clip, nodes, contentDrawBounds, surface, preTransform);
+    }
+    .....
+}
+
+void SkiaPipeline::renderOverdraw(const SkRect&amp; clip,
+                                  const std::vector&lt;sp&lt;RenderNode&gt;&gt;&amp; nodes,
+                                  const Rect&amp; contentDrawBounds, sk_sp&lt;SkSurface&gt; surface,
+                                  const SkMatrix&amp; preTransform) {
+    // Set up the overdraw canvas.
+    ....
+    surface-&gt;getCanvas()-&gt;drawImage(counts.get(), 0.0f, 0.0f, SkSamplingOptions(), &amp;paint);
+}
+
+进入libskia库最终转化为gl指令，发给GPU,这里还要在学习。
+/*external/skia/src/core/SkCanvas.cpp*/
+
+void SkCanvas::drawImage(const SkImage* image, SkScalar x, SkScalar y,
+                         const SkSamplingOptions&amp; sampling, const SkPaint* paint) {
+    TRACE_EVENT0(&quot;skia&quot;, TRACE_FUNC);
+    RETURN_ON_NULL(image);
+    this-&gt;onDrawImage2(image, x, y, sampling, paint);
+}
+
+
+</code></pre>
+
+                
+                
+<div class="entry-shang text-center">
+    
+	    <p>「真诚赞赏，手留余香」</p>
+	
+	<button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+	<div class="zs-modal-head">
+		<button type="button" class="close">×</button>
+		<span class="author"><a href="https://ywqyunshan.github.io/"><img src="/img/favicon.png" />FQ Blog</a></span>
+        
+	        <p class="tip"><i></i><span>真诚赞赏，手留余香</span></p>
+		
+ 
+	</div>
+	<div class="zs-modal-body">
+		<div class="zs-modal-btns">
+			<button class="btn btn-blink" data-num="2">2元</button>
+			<button class="btn btn-blink" data-num="5">5元</button>
+			<button class="btn btn-blink" data-num="10">10元</button>
+			<button class="btn btn-blink" data-num="50">50元</button>
+			<button class="btn btn-blink" data-num="100">100元</button>
+			<button class="btn btn-blink" data-num="1">任意金额</button>
+		</div>
+		<div class="zs-modal-pay">
+			<button class="btn btn-bred" id="pay-text">2元</button>
+			<p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+			<img src="/img/reward/wechat-2.png"  id="pay-image"/>
+		</div>
+	</div>
+	<div class="zs-modal-footer">
+		<label><input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked"><span ><span class="zs-wechat"><img src="/img/reward/wechat-btn.png"/></span></label>
+		<label><input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay"><img src="/img/reward/alipay-btn.png"/></span></label>
+	</div>
+</div>
+<script type="text/javascript" src="/js/reward.js"></script>
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2023/02/04/" data-toggle="tooltip" data-placement="top" title="Android图形系统-窗口子系统">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+                
+
+                
+
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        <a href="/tags/istio" title="istio">
+                            istio
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+                <section>
+                    <hr>
+                    <h5>FRIENDS</h5>
+                    <ul class="list-inline">
+                        
+                        <li><a target="_blank" href="https://www.jianshu.com/u/e9dc7e422257">iigeoywq的博客</a></li>
+                        
+                    </ul>
+                </section>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:youremail@gmail.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    <li>
+                        <a target="_blank" href="/your%20wechat%20qr%20code%20image">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-weixin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/yourgithub">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/yourlinkedinid">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://stackoverflow.com/users/yourstackoverflowid">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="FQ Blog" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; FQ Blog 2023
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>

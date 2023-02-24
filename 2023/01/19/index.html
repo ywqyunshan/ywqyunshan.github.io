@@ -15,9 +15,9 @@
     
 
     
-    <meta name="title" content="计算机基础前置知识" />
-    <meta property="og:title" content="计算机基础前置知识" />
-    <meta property="twitter:title" content="计算机基础前置知识" />
+    <meta name="title" content="Android图形系统-架构" />
+    <meta property="og:title" content="Android图形系统-架构" />
+    <meta property="twitter:title" content="Android图形系统-架构" />
     
 
     
@@ -34,9 +34,9 @@
     <meta name="keyword"  content="iigeoywq, 博客, 个人网站, 图形学, GIS, 座舱, 车载, Andorid, 系统">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>计算机基础前置知识 | </title>
+    <title>Android图形系统-架构 | </title>
 
-    <link rel="canonical" href="/2022/12/07/">
+    <link rel="canonical" href="/2023/01/19/">
 
     
     
@@ -175,16 +175,16 @@
                         </a>
                         
                     </div>
-                    <h1>计算机基础前置知识</h1>
-                    <h2 class="subheading">计算机体系</h2>
+                    <h1>Android图形系统-架构</h1>
+                    <h2 class="subheading"></h2>
                     <span class="meta">
                         
                             Posted by 
                             
-                                    &#34;iigeoywq&#34;
+                                    &#34;iigeoywq button&#34;
                              
                             on 
-                            Wednesday, December 7, 2022
+                            Thursday, January 19, 2023
                             
                             
                             
@@ -211,116 +211,129 @@
 
                 
                 <blockquote>
-<p>任何问题都会有一个前置条件，为了进一步学习操作系统，梳理一下计算机系统学习的前置知识，本文主要记录<a href="https://www.bilibili.com/video/BV1EW411u7th/?p=1&amp;share_medium=iphone&amp;share_plat=ios&amp;share_source=COPY&amp;share_tag=s_i&amp;timestamp=1626958909&amp;unique_k=a33Kwq">【计算机科学速成课】[40集全/精校] - Crash Course Computer Science</a>和《深入浅出计算机组成原理》学习笔记。</p>
+<p>Android系统源码繁杂，庞大，网上分析文章很多，本文结合Android11 源码和一些优秀的文章整理而成。</p>
 </blockquote>
-<h2 id="计算机体系架构抽象">计算机体系架构抽象</h2>
-<p>结合课程的学习，自下而上整理计算机体系架构</p>
+<h2 id="一-前言">一 前言</h2>
+<h3 id="硬件环境">硬件环境:</h3>
+<ul>
+<li>源码编译环境：Win11+WSL2+Ubuntu22.04</li>
+<li>手机：Pixel3A</li>
+</ul>
+<h3 id="引用资料">引用资料：</h3>
+<ul>
+<li>
+<p>环境搭建：</p>
+<ul>
+<li><a href="https://learn.microsoft.com/zh-cn/windows/wsl/install">使用 WSL 在 Windows 上安装 Linux</a></li>
+<li><a href="https://androidperformance.com/2021/10/26/build-android-12/">Android 系统开发系列（1）：Android 12 源代码下载、编译和刷机</a></li>
+<li><a href="https://juejin.cn/post/7188078567022919739">写给Windows用户的AOSP构建开发环境配置指南</a></li>
+</ul>
+</li>
+<li>
+<p>官方文档</p>
+<ul>
+<li><a href="https://source.android.com/docs/core/graphics?hl=zh-cn">https://source.android.com/docs/core/graphics?hl=zh-cn</a></li>
+<li><a href="https://cs.android.com/androidy">Android官方源码在线浏览仓库</a></li>
+</ul>
+</li>
+<li>
+<p>努比亚技术团队的五篇经典文章</p>
+<ul>
+<li><a href="https://www.jianshu.com/p/df46e4b39428">Android画面显示流程分析(1)</a></li>
+<li><a href="https://www.jianshu.com/p/f96ab6646ae3">Android画面显示流程分析(2)</a></li>
+<li><a href="https://www.jianshu.com/p/3c61375cc15b">Android画面显示流程分析(3)</a></li>
+<li><a href="https://www.jianshu.com/p/7a18666a43ce">Android画面显示流程分析(4)</a></li>
+<li><a href="https://www.jianshu.com/p/dcaf1eeddeb1">Android画面显示流程分析(5)</a></li>
+</ul>
+</li>
+<li>
+<p><a href="http://download.100ask.org/videos_tutorial/android/display/index.html">韦东山Android显示系统专题视频教程</a></p>
+<ul>
+<li><a href="https://www.cnblogs.com/liusiluandzhangkun/category/1225276.html">https://www.cnblogs.com/liusiluandzhangkun/category/1225276.html</a></li>
+</ul>
+</li>
+<li>
+<p>沧浪之水的几篇文章</p>
+<ul>
+<li><a href="https://zhuanlan.zhihu.com/p/261169653">自上而下解读Android显示流程（上）</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/421532503">自上而下解读Android显示流程（中上)</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/261914515">自上而下解读Android显示流程（中下）：Graphic Buffer的共享、分配、同步</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/261657281">自上而下解读Android显示流程（下）-Display Processor的设计</a></li>
+</ul>
+</li>
+<li>
+<p><a href="https://www.51cto.com/article/717713.html">深入理解Android图形系统</a></p>
+</li>
+<li>
+<p>Linaro connect 的几篇文章</p>
+<ul>
+<li><a href="https://lpc.events/event/5/contributions/319/attachments/442/696/Android_DRM_KMS_Update_XDC2019.pdf">DRM/KMS for Android</a></li>
+<li><a href="https://static.linaro.org/connect/yvr18/presentations/yvr18-204.pdf">drm_hwcomposer</a></li>
+<li><a href="https://static.linaro.org/connect/bkk16/Presentations/Wednesday/BKK16-315.pdf">Graphics Stack Update</a></li>
+</ul>
+</li>
+<li>
+<p><a href="https://wizzie.top/Blog/2020/10/31/2020/201031_android_SurfaceFlinger2/">Android Q SurfaceFlinger合成</a></p>
+</li>
+<li>
+<p><a href="https://kernel.meizu.com/memory%20management%20-%20ion.html">内存管理 —— ION</a></p>
+</li>
+</ul>
+<!--more-->
+<h2 id="二-架构">二 架构</h2>
+<h3 id="21-android图形系统学习路线">2.1 Android图形系统学习路线：</h3>
+<ul>
+<li>从纵向来看，自上而下分为5层：应用层-&gt;Framework-&gt;Hal-&gt;Linux内核-&gt;硬件。其中Framework层有分为Java和Native。</li>
+<li>从横向来看，分为窗口子系统,渲染子系统,显示子系统。其中窗口子系统有分为窗口管理器和合成管理器。
+后面章节会按照窗口子系统-窗口管理器&ndash;&gt;渲染子系统&ndash;&gt;窗口子系统-合成管理器&ndash;&gt;显示子系统路线梳理文章</li>
+</ul>
+<h3 id="22-整体架构">2.2 整体架构</h3>
+<ul>
+<li>1.首先app层和Java Framework层和NatvieFramework层连接，创建一个窗口；</li>
+<li>2.然后App进程收到vsync-app信号后，向NativeFramework层申请buffer，NativeFramework收到请求后，继续向hal层申请共享内存，最后通过层层回传句柄给应用进程；</li>
+<li>3.接着，应用层构建Display list数据并通过厂商提供的opengl库走gpu绘制；</li>
+<li>4.绘制完成后，提交buffer；</li>
+<li>5.接着，sf进程收到vsync-sf信号后，检查layer，并创建hwc layer，并根据hwc layer的合成方式，先gpu合成，后hwc合成，最后送显。</li>
+</ul>
 <p>
-  <img src="/img/%e8%ae%a1%e7%ae%97%e6%9c%ba%e5%9f%ba%e7%a1%80.png" alt="计算机体系">
+  <img src="/img/android%e5%9b%be%e5%bd%a2%e6%9e%b6%e6%9e%84.png" alt="Android图形架构">
 
 </p>
-<p>下面是课程的一些知识点记录和理解</p>
-<h2 id="电子计算机发展">电子计算机发展</h2>
-<ul>
-<li>继电器：电子控制机械开关，缺点：计算速度慢，机械件磨损，故障概率高；</li>
-<li>真空管
-二极管：电流只能单向流动的电子部件；
-三极管：再二极管的基础上增加控制电极，实现电子流动控制；
-缺点：玻璃外壳易碎，价格昂贵；</li>
-<li>晶体管：用半导体材料控制电流的流动；</li>
-</ul>
-<p>继电器&ndash;&gt;真空管&ndash;&gt;晶体管 控制电路开闭速度越来越快</p>
-<h2 id="数学表达和逻辑门">数学表达和逻辑门</h2>
-<ul>
-<li>二进制表达：1.只有2种状态，防止信号干扰；2.有现成的数学分支-布尔代数，通过ture和fasle解决了所有的法则和运算；</li>
-<li>逻辑门：AND/NOT/OR&mdash;&gt;XOR
-  <img src="/img/%e9%80%bb%e8%be%91%e9%97%a8_XOR.jpg" alt="XOR">
+<h3 id="22-模块源码">2.2 模块源码</h3>
+<pre><code>* 各层源码仓库地址：
+* App 层:frameworks/base/core/java
+* Java Framework SystemServer ：frameworks/base/services/core
 
-</li>
-<li>数字表示：正数/负数/整数/浮点数</li>
-<li>字符表示：ASCII</li>
-<li>字符编码标准：Unicode，解决ASCII不够表达所有语言的问题</li>
-</ul>
-<h2 id="现代计算机体系结构">现代计算机体系结构</h2>
-<p>
-  <img src="/img/%E5%86%AF%E8%AF%BA%E4%BE%9D%E6%9B%BC%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84.jpeg" alt="冯·诺依曼体系结构">
+* Jni：frameworks/base/core/jni/Android.bp
+* Native Framework Surfaceflinger client测：
+frameworks\native\libs\gui
 
-</p>
-<h2 id="存储--内存">存储&ndash;内存</h2>
-<ul>
-<li>锁存器：用逻辑门组装一个存1位的电路；
-
-  <img src="/img/%e9%94%81%e5%ad%98%e5%99%a8.jpg" alt="锁存器">
-
-</li>
-<li>门锁：带有开关的锁存器；</li>
-<li>8位寄存器：存储一个数字，<strong>注意8位地址一样，方便一次读取8位。</strong>
-1.用8个锁存器组装实现，缺点：线束太多；
-
-  <img src="/img/8%e4%bd%8d%e5%af%84%e5%ad%98%e5%99%a8.jpg" alt="寄存器">
+*  Native Framework Surfaceflinger server测：
+frameworks/native/services/surfaceflinger
+hwserivice client frameworks\native\services\surfaceflinger\displayhardware
 
 
-2.门锁矩阵，例如16*16矩阵，256个锁存器组装；</li>
-</ul>
-<p>
-  <img src="/img/%e9%97%a8%e9%94%81%e7%9f%a9%e9%98%b5.jpg" alt="锁存器">
+* 渲染库 frameworks\base\libs\hwui
 
-</p>
-<ul>
-<li>RAM
-用上述8个16*16门锁矩阵组装的内存，可以存储256个字节；
 
-  <img src="/img/RAM%e5%ae%9e%e7%8e%b0.jpg" alt="RAM实现">
+* Hal层：
+* google软件实现：
+hardware/libhardware/modules/gralloc/
+hardware/libhardware/modules/hwcomposer/
 
-</li>
-</ul>
-<h2 id="计算--cpu">计算&ndash;CPU</h2>
-<h3 id="alu---算数单元和逻辑单元">ALU - 算数单元和逻辑单元</h3>
-<h4 id="算数单元">算数单元</h4>
-<ul>
-<li>半加器：处理 1 bit的逻辑门电路；
 
-  <img src="/img/%E5%8D%8A%E5%8A%A0%E5%99%A8.jpg" alt="半加器">
-
-</li>
-<li>全加器：处理 1 bit的逻辑门电路；
-
-  <img src="/img/%E5%85%A8%E5%8A%A0%E5%99%A8.jpg" alt="全加器">
-
-</li>
-<li>8位加法运算：1个半加器和7个全加器的电路；</li>
-</ul>
-<h4 id="逻辑单元">逻辑单元</h4>
-<ul>
-<li>检测数字是否为0电路；
-
-  <img src="/img/%E9%80%BB%E8%BE%91%E5%88%A4%E6%96%ADTrue.jpg" alt="逻辑判断">
-
-</li>
-<li>Flag标志；</li>
-</ul>
-<h3 id="控制单元">控制单元</h3>
-<ul>
-<li>通过指令寄存器和指令地址寄存器控制流程；</li>
-</ul>
-<h4 id="cpu执行过程">CPU执行过程</h4>
-<ul>
-<li>取码
-
-  <img src="/img/cpu-%E5%8F%96%E7%A0%81.jpg" alt="取码">
-
-</li>
-<li>解码
-
-  <img src="/img/cpu-%E8%A7%A3%E7%A0%81.jpg" alt="解码">
-
-</li>
-<li>执行
-
-  <img src="/img/cpu-%E6%89%A7%E8%A1%8C.png" alt="执行">
-
-</li>
-</ul>
+* 厂商实现：黑盒子以so方式提供，google仓库有部分开源实现
+hardware/qcom/display/msm8084/libgralloc/
+hardware/qcom/display/msm8084/libhwcomposer/
+</code></pre><h2 id="三-图形系统文章系列目录">三 图形系统文章系列目录</h2>
+<p>1.Android图形系统-整体架构</p>
+<p>2.<a href="">Android图形系统-窗口子系统-窗口</a></p>
+<p>3.[Android图形系统-渲染子系统]</p>
+<p>4.<a href="">Android图形系统-窗口子系统-合成</a></p>
+<p>5.Android图形系统-显示子系统</p>
+<p>6.Android图形系统-vsync机制</p>
+<h2 id="四-qa">四 Q/A</h2>
+<p>//todo</p>
 
                 
                 
@@ -368,9 +381,14 @@
                 <hr>
                 <ul class="pager">
                     
+                    <li class="previous">
+                        <a href="/2022/12/07/" data-toggle="tooltip" data-placement="top" title="计算机基础前置知识">&larr;
+                            Previous Post</a>
+                    </li>
+                    
                     
                     <li class="next">
-                        <a href="/2023/01/19/" data-toggle="tooltip" data-placement="top" title="Android图形系统-架构">Next
+                        <a href="/2023/02/04/" data-toggle="tooltip" data-placement="top" title="Android图形系统-窗口子系统">Next
                             Post &rarr;</a>
                     </li>
                     
