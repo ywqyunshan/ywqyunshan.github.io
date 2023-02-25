@@ -300,40 +300,153 @@
 
 </p>
 <h3 id="22-模块源码">2.2 模块源码</h3>
-<pre><code>* 各层源码仓库地址：
-* App 层:frameworks/base/core/java
-* Java Framework SystemServer ：frameworks/base/services/core
-
-* Jni：frameworks/base/core/jni/Android.bp
-* Native Framework Surfaceflinger client测：
-frameworks\native\libs\gui
-
-*  Native Framework Surfaceflinger server测：
-frameworks/native/services/surfaceflinger
-hwserivice client frameworks\native\services\surfaceflinger\displayhardware
-
-
-* 渲染库 frameworks\base\libs\hwui
-
-
-* Hal层：
-* google软件实现：
-hardware/libhardware/modules/gralloc/
-hardware/libhardware/modules/hwcomposer/
-
-
-* 厂商实现：黑盒子以so方式提供，google仓库有部分开源实现
-hardware/qcom/display/msm8084/libgralloc/
-hardware/qcom/display/msm8084/libhwcomposer/
-</code></pre><h2 id="三-图形系统文章系列目录">三 图形系统文章系列目录</h2>
-<p>1.Android图形系统-整体架构</p>
-<p>2.<a href="">Android图形系统-窗口子系统-窗口</a></p>
-<p>3.[Android图形系统-渲染子系统]</p>
-<p>4.<a href="">Android图形系统-窗口子系统-合成</a></p>
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-lboi{border-color:inherit;text-align:left;vertical-align:middle}
+.tg .tg-uzvj{border-color:inherit;font-weight:bold;text-align:center;vertical-align:middle}
+.tg .tg-7btt{border-color:inherit;font-weight:bold;text-align:center;vertical-align:top}
+.tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
+.tg .tg-0lax{text-align:left;vertical-align:top}
+</style>
+<table class="tg" style="undefined;table-layout: fixed; width: 1123px">
+<colgroup>
+<col style="width: 100.333333px">
+<col style="width: 116.333333px">
+<col style="width: 283.333333px">
+<col style="width: 186.333333px">
+<col style="width: 162.333333px">
+<col style="width: 154.333333px">
+<col style="width: 120.333333px">
+</colgroup>
+<thead>
+  <tr>
+    <th class="tg-uzvj" colspan="2" rowspan="2">模块</th>
+    <th class="tg-7btt" colspan="2">源码路径</th>
+    <th class="tg-7btt" colspan="2">类库</th>
+    <th class="tg-uzvj" rowspan="2">备注</th>
+  </tr>
+  <tr>
+    <th class="tg-uzvj">Android实现</th>
+    <th class="tg-uzvj">厂商（高通）实现</th>
+    <th class="tg-uzvj">Android</th>
+    <th class="tg-uzvj">厂商（高通）</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-0pky" colspan="2">APP层</td>
+    <td class="tg-0pky" colspan="2"></td>
+    <td class="tg-0pky" colspan="2">APK</td>
+    <td class="tg-0pky"></td>
+  </tr>
+  <tr>
+    <td class="tg-lboi" rowspan="3">Java Framework层</td>
+    <td class="tg-0pky">Client</td>
+    <td class="tg-0pky" colspan="2">frameworks/base/core/</td>
+    <td class="tg-0pky" colspan="2">system/framework/framework.jar</td>
+    <td class="tg-0pky"></td>
+  </tr>
+  <tr>
+    <td class="tg-0pky" rowspan="2">SystemServer</td>
+    <td class="tg-0pky" colspan="2" rowspan="2">frameworks/base/services/core</td>
+    <td class="tg-0pky" colspan="2" rowspan="2">system/framework/service.jar</td>
+    <td class="tg-0pky"></td>
+  </tr>
+  <tr>
+    <td class="tg-0pky"></td>
+  </tr>
+  <tr>
+    <td class="tg-lboi" rowspan="6">Native Framework层<br></td>
+    <td class="tg-0pky">Jni</td>
+    <td class="tg-0pky" colspan="2">frameworks/base/core/jni<br></td>
+    <td class="tg-0pky" colspan="2">/system/lib64/libandroid_runtime.so</td>
+    <td class="tg-0pky"></td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">hwui</td>
+    <td class="tg-0lax" colspan="2">frameworks/base/libs/hwui</td>
+    <td class="tg-0lax" colspan="2">/system/lib64/libhwui.so</td>
+    <td class="tg-0lax"></td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">gui</td>
+    <td class="tg-0lax" colspan="2">frameworks/native/libs/gui</td>
+    <td class="tg-0lax" colspan="2">/system/lib64/libgui.so</td>
+    <td class="tg-0lax"></td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">skia</td>
+    <td class="tg-0lax" colspan="2">external/skia/</td>
+    <td class="tg-0lax" colspan="2">libskia.so</td>
+    <td class="tg-0lax"></td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">opengl</td>
+    <td class="tg-0pky" colspan="2">frameworks/native/opengl/libs/(EGL wrapper)<br><br>实现库：厂商实现</td>
+    <td class="tg-0pky" colspan="2">/system/lib64/egl/</td>
+    <td class="tg-0pky"></td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">Server-SurfaceFilnger</td>
+    <td class="tg-0pky" colspan="2">frameworks/native/services/surfaceflinger<br></td>
+    <td class="tg-0pky" colspan="2" rowspan="2">/system/bin/surfaceflinger</td>
+    <td class="tg-0pky"></td>
+  </tr>
+  <tr>
+    <td class="tg-0pky" rowspan="5">Hal层</td>
+    <td class="tg-0pky">Client</td>
+    <td class="tg-0pky" colspan="2">/frameworks/native/services/surfaceflinger/DisplayHardware<br><br></td>
+    <td class="tg-0pky"></td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">Server-hal</td>
+    <td class="tg-0pky" colspan="2">hardware/interfaces/graphics/</td>
+    <td class="tg-0pky" colspan="2">vendor/lib64/android.hardware.graphics.xxx@2.1.so<br>vendor/lib64/hw/android.hardware.graphics.xxx@2.1-impl.so<br>vendor/bin/hw/android.hardware.graphics.xxx@2.1-service<br></td>
+    <td class="tg-0pky"></td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">hal实现</td>
+    <td class="tg-0pky">hardware/libhardware/modules<br><br>external/drm_hwcomposer/（HWC2 三方开源实现）</td>
+    <td class="tg-0pky">hardware/qcom/sdm845/<br>display/sdm<br></td>
+    <td class="tg-0pky">xxx.drm.so<br>(hwc2开源实现)<br><br>xxx.default.so</td>
+    <td class="tg-0pky">vendor/lib64/hw/<br>xxx.sdmxxx.so<br></td>
+    <td class="tg-0pky">高通的so都是闭源的，高通只开放了部分源码仅供参考，以高通官方文档为准</td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">drm接口层</td>
+    <td class="tg-0pky" colspan="2">external/libdrm/libkms/</td>
+    <td class="tg-0pky" colspan="2">vendor/lib64/libdrm.so</td>
+    <td class="tg-0pky"></td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">共享内存</td>
+    <td class="tg-0lax" colspan="2">system/memory/libion/</td>
+    <td class="tg-0lax" colspan="2">/system/lib64/libion.so</td>
+    <td class="tg-0lax"></td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">内核层</td>
+    <td class="tg-0pky">DRM-KMS</td>
+    <td class="tg-0pky">待确定</td>
+    <td class="tg-0pky">common/drivers/gpu/drm/msm/</td>
+    <td class="tg-0pky">待确定</td>
+    <td class="tg-0pky">待确定</td>
+    <td class="tg-0pky"></td>
+  </tr>
+</tbody>
+</table>
+更详细的源码目录可阅读后续窗口和渲染子系统系列目录。
+<h2 id="三-图形系统文章系列目录">三 图形系统文章系列目录</h2>
+<p>1.<a href="">Android图形系统-整体架构</a></p>
+<p>2.<a href="https://ywqyunshan.github.io/2023/02/04/">Android图形系统-窗口子系统-窗口</a></p>
+<p>3.<a href="https://ywqyunshan.github.io/2023/02/04/">Android图形系统-渲染子系统</a></p>
+<p>4.Android图形系统-窗口子系统-合成</p>
 <p>5.Android图形系统-显示子系统</p>
 <p>6.Android图形系统-vsync机制</p>
-<h2 id="四-qa">四 Q/A</h2>
-<p>//todo</p>
 
                 
                 

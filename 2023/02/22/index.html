@@ -228,29 +228,26 @@
 .tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
 .tg .tg-0lax{text-align:left;vertical-align:top}
 </style>
-<table class="tg" style="undefined;table-layout: fixed; width: 1530px">
+<table class="tg" style="undefined;table-layout: fixed; width: 1123px">
 <colgroup>
 <col style="width: 100.333333px">
 <col style="width: 116.333333px">
-<col style="width: 366.333333px">
-<col style="width: 311.333333px">
-<col style="width: 68.333333px">
+<col style="width: 283.333333px">
+<col style="width: 186.333333px">
 <col style="width: 162.333333px">
-<col style="width: 284.333333px">
+<col style="width: 154.333333px">
 <col style="width: 120.333333px">
 </colgroup>
 <thead>
   <tr>
     <th class="tg-uzvj" colspan="2" rowspan="2">模块</th>
     <th class="tg-7btt" colspan="2">源码路径</th>
-    <th class="tg-uzvj">进程</th>
     <th class="tg-7btt" colspan="2">类库</th>
     <th class="tg-uzvj" rowspan="2">备注</th>
   </tr>
   <tr>
     <th class="tg-uzvj">Android实现</th>
     <th class="tg-uzvj">厂商（高通）实现</th>
-    <th class="tg-0pky"></th>
     <th class="tg-uzvj">Android</th>
     <th class="tg-uzvj">厂商（高通）</th>
   </tr>
@@ -259,104 +256,99 @@
   <tr>
     <td class="tg-0pky" colspan="2">APP层</td>
     <td class="tg-0pky" colspan="2"></td>
-    <td class="tg-0pky" rowspan="5">主线程</td>
     <td class="tg-0pky" colspan="2">APK</td>
     <td class="tg-0pky"></td>
   </tr>
   <tr>
-    <td class="tg-lboi" colspan="2" rowspan="2">Java Framework层</td>
-    <td class="tg-0pky" colspan="2">frameworks/base/core/java/android/view/Surface.java<br></td>
-    <td class="tg-0pky" colspan="2" rowspan="2">system/framework/framework.jar</td>
+    <td class="tg-lboi" rowspan="3">Java Framework层</td>
+    <td class="tg-0pky">Client</td>
+    <td class="tg-0pky" colspan="2">frameworks/base/core/</td>
+    <td class="tg-0pky" colspan="2">system/framework/framework.jar</td>
     <td class="tg-0pky"></td>
   </tr>
   <tr>
-    <td class="tg-0pky" colspan="2">frameworks/base/core/java/android/view/ThreadedRenderer.java<br>frameworks/base/graphics/java/android/graphics/RenderNode.java<br>frameworks/base/graphics/java/android/graphics/HardwareRenderer.java<br>frameworks/base/graphics/java/android/graphics/RenderNode.java<br>frameworks/base/graphics/java/android/graphics/HardwareRenderer.java</td>
+    <td class="tg-0pky" rowspan="2">SystemServer</td>
+    <td class="tg-0pky" colspan="2" rowspan="2">frameworks/base/services/core</td>
+    <td class="tg-0pky" colspan="2" rowspan="2">system/framework/service.jar</td>
     <td class="tg-0pky"></td>
   </tr>
   <tr>
-    <td class="tg-0pky">Native Framework层</td>
-    <td class="tg-0pky">Jni</td>
-    <td class="tg-0pky" colspan="2">frameworks/base/libs/hwui/jni/android_graphics_HardwareRenderer.cpp<br></td>
-    <td class="tg-0pky" colspan="2" rowspan="3">system/lib64/libhwui.so</td>
     <td class="tg-0pky"></td>
   </tr>
   <tr>
     <td class="tg-lboi" rowspan="6">Native Framework层<br></td>
-    <td class="tg-0pky" rowspan="2">hwui</td>
-    <td class="tg-0pky" colspan="2"><br>frameworks/base/libs/hwui/renderthread/RenderProxy.cpp<br>frameworks/base/libs/hwui/renderthread/DrawFrameTask.cpp<br><br></td>
+    <td class="tg-0pky">Jni</td>
+    <td class="tg-0pky" colspan="2">frameworks/base/core/jni<br></td>
+    <td class="tg-0pky" colspan="2">/system/lib64/libandroid_runtime.so</td>
     <td class="tg-0pky"></td>
   </tr>
   <tr>
-    <td class="tg-0lax" colspan="2">frameworks/base/libs/hwui/renderthread/CanvasContext.cpp</td>
-    <td class="tg-0lax" rowspan="4">Render线程</td>
+    <td class="tg-0lax">hwui</td>
+    <td class="tg-0lax" colspan="2">frameworks/base/libs/hwui</td>
+    <td class="tg-0lax" colspan="2">/system/lib64/libhwui.so</td>
     <td class="tg-0lax"></td>
   </tr>
   <tr>
-    <td class="tg-0pky">libgui</td>
-    <td class="tg-0pky" colspan="2">frameworks/native/libs/gui/Surface.cpp<br></td>
-    <td class="tg-0pky" colspan="2">system/lib64/libhgui.so</td>
-    <td class="tg-0pky"></td>
+    <td class="tg-0lax">gui</td>
+    <td class="tg-0lax" colspan="2">frameworks/native/libs/gui</td>
+    <td class="tg-0lax" colspan="2">/system/lib64/libgui.so</td>
+    <td class="tg-0lax"></td>
   </tr>
   <tr>
-    <td class="tg-0pky">skia</td>
-    <td class="tg-0pky" colspan="2">external/skia/<br></td>
-    <td class="tg-0pky" colspan="2">libskia.so</td>
-    <td class="tg-0pky"></td>
+    <td class="tg-0lax">skia</td>
+    <td class="tg-0lax" colspan="2">external/skia/</td>
+    <td class="tg-0lax" colspan="2">libskia.so</td>
+    <td class="tg-0lax"></td>
   </tr>
   <tr>
     <td class="tg-0pky">opengl</td>
-    <td class="tg-0pky" colspan="2">frameworks/native/opengl/libs/(EGL wrapper)<br></td>
-    <td class="tg-0pky">libGLESv1_CM.so<br>libGLESv2.so<br>libGLESv3.so</td>
-    <td class="tg-0pky">/vendor/lib64/egl/libGLESv1_CM_adreno.so<br>/vendor/lib64/egl/libGLESv2_adreno.so<br>/vendor/lib64/egl/libEGL_adreno.so<br></td>
+    <td class="tg-0pky" colspan="2">frameworks/native/opengl/libs/(EGL wrapper)<br><br>实现库：厂商实现</td>
+    <td class="tg-0pky" colspan="2">/system/lib64/egl/</td>
     <td class="tg-0pky"></td>
   </tr>
   <tr>
-    <td class="tg-0pky">Sever-SF</td>
-    <td class="tg-0pky" colspan="2">frameworks/native/libs/gui/BufferQueueProducer.cpp</td>
-    <td class="tg-0pky"></td>
-    <td class="tg-0pky" colspan="2">/system/bin/surfacefinger</td>
-    <td class="tg-0pky"></td>
-  </tr>
-  <tr>
-    <td class="tg-0pky">Hal层</td>
-    <td class="tg-0pky">Client-libui</td>
-    <td class="tg-0pky" colspan="2">frameworks/native/libs/ui/GraphicBuffer.cpp<br> </td>
-    <td class="tg-0pky"></td>
-    <td class="tg-0pky" colspan="2">system/lib64/libui.so</td>
+    <td class="tg-0pky">Server-SurfaceFilnger</td>
+    <td class="tg-0pky" colspan="2">frameworks/native/services/surfaceflinger<br></td>
+    <td class="tg-0pky" colspan="2" rowspan="2">/system/bin/surfaceflinger</td>
     <td class="tg-0pky"></td>
   </tr>
   <tr>
-    <td class="tg-0pky"></td>
-    <td class="tg-0pky">Server-galloc</td>
-    <td class="tg-0pky" colspan="2">hardware/interfaces/graphics/mapper/2.1/default<br></td>
-    <td class="tg-0pky"></td>
-    <td class="tg-0pky" colspan="2">vendor/lib64/hw/android.hardware.graphics.mapper@2.1-impl.so<br>system/lib64/android.hardware.graphics.mapper@2.1.so</td>
+    <td class="tg-0pky" rowspan="5">Hal层</td>
+    <td class="tg-0pky">Client</td>
+    <td class="tg-0pky" colspan="2">/frameworks/native/services/surfaceflinger/DisplayHardware<br><br></td>
     <td class="tg-0pky"></td>
   </tr>
   <tr>
+    <td class="tg-0pky">Server-hal</td>
+    <td class="tg-0pky" colspan="2">hardware/interfaces/graphics/</td>
+    <td class="tg-0pky" colspan="2">vendor/lib64/android.hardware.graphics.xxx@2.1.so<br>vendor/lib64/hw/android.hardware.graphics.xxx@2.1-impl.so<br>vendor/bin/hw/android.hardware.graphics.xxx@2.1-service<br></td>
     <td class="tg-0pky"></td>
-    <td class="tg-0pky">galloc实现</td>
-    <td class="tg-0pky">hardware/libhardware/modules/galloc/mapper.cpp</td>
-    <td class="tg-0pky"><br>hardware/qcom/sdm845/display/gralloc/</td>
-    <td class="tg-0pky"></td>
-    <td class="tg-0pky">gralloc.default.so</td>
-    <td class="tg-0pky">vendor/lib64/hw/gralloc.sdmxxx.so<br></td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">hal实现</td>
+    <td class="tg-0pky">hardware/libhardware/modules<br><br>external/drm_hwcomposer/（HWC2 三方开源实现）</td>
+    <td class="tg-0pky">hardware/qcom/sdm845/<br>display/sdm<br></td>
+    <td class="tg-0pky">xxx.drm.so<br>(hwc2开源实现)<br><br>xxx.default.so</td>
+    <td class="tg-0pky">vendor/lib64/hw/<br>xxx.sdmxxx.so<br></td>
     <td class="tg-0pky">高通的so都是闭源的，高通只开放了部分源码仅供参考，以高通官方文档为准</td>
   </tr>
   <tr>
-    <td class="tg-0pky"></td>
-    <td class="tg-0pky">共享内存层</td>
-    <td class="tg-0pky" colspan="2">system/memory/libion/</td>
-    <td class="tg-0pky"></td>
-    <td class="tg-0pky" colspan="2">system/lib64/libion.so</td>
+    <td class="tg-0pky">drm接口层</td>
+    <td class="tg-0pky" colspan="2">external/libdrm/libkms/</td>
+    <td class="tg-0pky" colspan="2">vendor/lib64/libdrm.so</td>
     <td class="tg-0pky"></td>
   </tr>
   <tr>
+    <td class="tg-0lax">共享内存</td>
+    <td class="tg-0lax" colspan="2">system/memory/libion/</td>
+    <td class="tg-0lax" colspan="2">/system/lib64/libion.so</td>
+    <td class="tg-0lax"></td>
+  </tr>
+  <tr>
     <td class="tg-0pky">内核层</td>
-    <td class="tg-0pky">DRM</td>
+    <td class="tg-0pky">DRM-KMS</td>
     <td class="tg-0pky">待确定</td>
-    <td class="tg-0pky">common/drivers/staging/android/ion</td>
-    <td class="tg-0pky"></td>
+    <td class="tg-0pky">common/drivers/gpu/drm/msm/</td>
     <td class="tg-0pky">待确定</td>
     <td class="tg-0pky">待确定</td>
     <td class="tg-0pky"></td>
