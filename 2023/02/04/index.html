@@ -542,9 +542,9 @@ status_t createSurface(const String8&amp; name, uint32_t width, uint32_t height,
                                outTransformHint);
 }
 </code></pre><h4 id="324-sf测创建layer和app进程的surface一一对应">3.2.4 sf测创建layer和app进程的surface一一对应</h4>
-<p>接3.2.3来到Surfaceflinger进程，在sf测创建layer和bufferqueue对象，最后WMS的createSurfaceControl方法中是通过getSurfaceControl将SurfaceControll传出来的给到app进程共用。
+<p>接3.2.3来到Surfaceflinger进程，在sf测创建layer和bufferqueue对象，最后WMS的createSurfaceControl方法中是通过getSurfaceControl将SurfaceControll传出来的给到app进程共用。引用沧浪之水的一张图看看SF创建layer的过程
 
-  <img src="/static/img/sf%E5%88%9B%E5%BB%BAsurface.jpg" alt="SF创建layer过程">
+  <img src="/img/sf%E5%88%9B%E5%BB%BAsurface.jpg" alt="SF创建layer过程">
 
 </p>
 <pre><code>/*frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp*/

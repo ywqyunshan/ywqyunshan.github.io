@@ -214,12 +214,37 @@
 <p>上一篇提到layer创建后，并申请buffer绘制，接着需要给layer设置对应的displayid，并设置合成类型（GPU/HWC），最终提交HWC合成。</p>
 </blockquote>
 <h2 id="一-窗口子系统合成架构">一 窗口子系统（合成）架构</h2>
-<p>合成主要是在SF和HWC测完成,先说几个概念。
-|  SF    | HWC Client  | HWC Server| 备注|
-|  &mdash;-  | &mdash;-        |&mdash;-       |&mdash;&ndash;|
-|        | HWC2::Device  |hw_device_t|dpu的抽象|
-|DisplayDevice |HWC2::Display  | hw_display_t |显示屏幕抽象（物理屏幕或者虚拟显示屏）|
-|Layer|HWC2::Layer |hw_layer_t|叠加图形抽象|</p>
+<p>合成主要是在SF和HWC测完成,先说几个概念。</p>
+<table>
+<thead>
+<tr>
+<th>SF</th>
+<th>HWC Client</th>
+<th>HWC Server</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td>HWC2::Device</td>
+<td>hw_device_t</td>
+<td>dpu的抽象</td>
+</tr>
+<tr>
+<td>DisplayDevice</td>
+<td>HWC2::Display</td>
+<td>hw_display_t</td>
+<td>显示屏幕抽象（物理屏幕或者虚拟显示屏）</td>
+</tr>
+<tr>
+<td>Layer</td>
+<td>HWC2::Layer</td>
+<td>hw_layer_t</td>
+<td>叠加图形抽象</td>
+</tr>
+</tbody>
+</table>
 <h2 id="二-源码分析">二 源码分析</h2>
 <p>接前2篇的分析，app进程收到vsync-app信号后，开始绘制，同时sf进程收到vsync-sf信号，开始寻找可以合并的layer。
 合成layer需要设置displayid，首先需要通过HWC拿到display数组。</p>
