@@ -15,9 +15,9 @@
     
 
     
-    <meta name="title" content="Android图形系统-窗口子系统" />
-    <meta property="og:title" content="Android图形系统-窗口子系统" />
-    <meta property="twitter:title" content="Android图形系统-窗口子系统" />
+    <meta name="title" content="Android图形系统-窗口子系统-合成" />
+    <meta property="og:title" content="Android图形系统-窗口子系统-合成" />
+    <meta property="twitter:title" content="Android图形系统-窗口子系统-合成" />
     
 
     
@@ -34,7 +34,7 @@
     <meta name="keyword"  content="iigeoywq, 博客, 个人网站, 图形学, GIS, 座舱, 车载, Andorid, 系统">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>Android图形系统-窗口子系统 | </title>
+    <title>Android图形系统-窗口子系统-合成 | </title>
 
     <link rel="canonical" href="/2023/03/03/">
 
@@ -175,7 +175,7 @@
                         </a>
                         
                     </div>
-                    <h1>Android图形系统-窗口子系统</h1>
+                    <h1>Android图形系统-窗口子系统-合成</h1>
                     <h2 class="subheading">合成</h2>
                     <span class="meta">
                         
@@ -216,8 +216,8 @@
 <h2 id="一-窗口子系统合成架构">一 窗口子系统（合成）架构</h2>
 <p>合成主要是在SF和HWC测完成,先说几个概念。
 |  SF    | HWC Client  | HWC Server| 备注|
-|  &mdash;-  | &mdash;-  |&mdash;-|&mdash;&ndash;|
-|   | HWC2::Device  |hw_device_t|dpu的抽象|
+|  &mdash;-  | &mdash;-        |&mdash;-       |&mdash;&ndash;|
+|        | HWC2::Device  |hw_device_t|dpu的抽象|
 |DisplayDevice |HWC2::Display  | hw_display_t |显示屏幕抽象（物理屏幕或者虚拟显示屏）|
 |Layer|HWC2::Layer |hw_layer_t|叠加图形抽象|</p>
 <h2 id="二-源码分析">二 源码分析</h2>
