@@ -385,7 +385,7 @@
 <a href="https://www.jianshu.com/p/37370c1d17fc">Android应用启动全流程分析</a>4到6节。</p>
 <h3 id="32-surface和layer创建">3.2 Surface和Layer创建</h3>
 <p>先小结一下，Java测的Surface对象是一个序列化对象，App进程和WMS进程共用，app进程将surface对象aidl声明为out的方式，传入wms进程，通过jni调用native测进程创建后，回传app进程。</p>
-<h3 id="321-向系统申请app类型的vsync信号">3.2.1 向系统申请app类型的vsync信号</h3>
+<h4 id="321-向系统申请app类型的vsync信号">3.2.1 向系统申请app类型的vsync信号</h4>
 <p>接3.1 来到Activity创建后的，经过下面流程WMS添加view到窗口。引用沧浪之水的一张图看一下。
 
   <img src="/img/WMS%E6%B7%BB%E5%8A%A0window.jpg" alt="WMS添加Window过程">
@@ -442,7 +442,7 @@ void scheduleTraversals() {
          ...
      }
 }
-</code></pre><h3 id="322-收到vsync通知后调到relayoutwindow方法将msurfacecontrol序列化对象传入wms进程创建surfae">3.2.2 收到vsync通知后，调到relayoutWindow方法，将mSurfaceControl序列化对象传入wms进程创建surfae</h3>
+</code></pre><h4 id="322-收到vsync通知后调到relayoutwindow方法将msurfacecontrol序列化对象传入wms进程创建surfae">3.2.2 收到vsync通知后，调到relayoutWindow方法，将mSurfaceControl序列化对象传入wms进程创建surfae</h4>
 <pre><code>/*frameworks/base/core/java/android/view/ViewRootImpl.java*/
 void doTraversal() {
      if (mTraversalScheduled) {
@@ -502,7 +502,7 @@ private int relayoutWindow(WindowManager.LayoutParams params, int viewVisibility
         }
         ...
 }
-</code></pre><h3 id="323-jni调用创建surface">3.2.3 jni调用创建surface</h3>
+</code></pre><h4 id="323-jni调用创建surface">3.2.3 jni调用创建surface</h4>
 <p>接3.2.2 来到wms进程，最终通过jni调用（android_view_SurfaceControl类），来到native cleint端（libgui库）创建SurfaceComposerClient对象并和surfaceflinger进程 connect。</p>
 <pre><code>/*frameworks/base/core/jni/android_view_SurfaceControl.cpp*/
 static jlong nativeCreate(JNIEnv* env, jclass clazz, jobject sessionObj,
@@ -541,7 +541,7 @@ status_t createSurface(const String8&amp; name, uint32_t width, uint32_t height,
                                handle, gbp,
                                outTransformHint);
 }
-</code></pre><h3 id="324-sf测创建layer和app进程的surface一一对应">3.2.4 sf测创建layer和app进程的surface一一对应</h3>
+</code></pre><h4 id="324-sf测创建layer和app进程的surface一一对应">3.2.4 sf测创建layer和app进程的surface一一对应</h4>
 <p>接3.2.3来到Surfaceflinger进程，在sf测创建layer和bufferqueue对象，最后WMS的createSurfaceControl方法中是通过getSurfaceControl将SurfaceControll传出来的给到app进程共用。
 
   <img src="img/sf%E5%88%9B%E5%BB%BAsurface.jpg" alt="SF创建layer过程">
@@ -617,11 +617,11 @@ status_t SurfaceFlinger::addClientLayer(const sp&lt;Client&gt;&amp; client, cons
     return NO_ERROR;
 }
 
-</code></pre><h2 id="33-绘制详细内容参考绘制篇">3.3 绘制（详细内容参考绘制篇）</h2>
+</code></pre><h3 id="33-绘制详细内容参考绘制篇">3.3 绘制（详细内容参考绘制篇）</h3>
 <p>创建surface/layer后，这时候layer中的buffer 是空的。接3.2.2的部分最终到renderthrea线程，通过layer申请buffer，绘制，并提交buffer。（下一篇重点分析）。</p>
-<h2 id="34-根据layer所属的displayid创建hwc-client对应的hwc2layer">3.4 根据layer所属的displayid创建HWC client对应的HWC2::layer</h2>
+<h3 id="34-根据layer所属的displayid创建hwc-client对应的hwc2layer">3.4 根据layer所属的displayid创建HWC client对应的HWC2::layer</h3>
 <p>sf测收到vsync-sf信号后，去当前对应layers数组中查找可以合成的layer,并创建hwc client对应的hwc2::layer。</p>
-<h3 id="341-sf收到vsync信号后">3.4.1 sf收到vsync信号后</h3>
+<h4 id="341-sf收到vsync信号后">3.4.1 sf收到vsync信号后</h4>
 <pre><code>/*frameworks/native/services/surfaceflinger/Surfaceflinger.cpp*/
 
 //收到vsync信号
@@ -671,7 +671,7 @@ void SurfaceFlinger::onMessageRefresh() {
     mCompositionEngine-&gt;present(refreshArgs);
    }
 
-</code></pre><h3 id="342-hwc-client创建需要合成的hwc2layer">3.4.2 HWC client创建需要合成的HWC2::Layer</h3>
+</code></pre><h4 id="342-hwc-client创建需要合成的hwc2layer">3.4.2 HWC client创建需要合成的HWC2::Layer</h4>
 <p>接3.4.1 来到CompositionEngine类的prepare方法</p>
 <pre><code>/*frameworks/native/services/surfaceflinger/CompositionEngine/src/CompositionEngine.cpp*/
 
