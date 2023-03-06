@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="FQ Blog">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="https://ywqyunshan.github.io//img/home-bg-jeep.jpg">
+    <meta property="twitter:image" content="https://ywqyunshan.github.io//img/home-bg-jeep.jpg" />
+    
+
+    
+    <meta name="title" content="Android图形系统-窗口子系统" />
+    <meta property="og:title" content="Android图形系统-窗口子系统" />
+    <meta property="twitter:title" content="Android图形系统-窗口子系统" />
+    
+
+    
+    <meta name="description" content="">
+    <meta property="og:description" content="" />
+    <meta property="twitter:description" content="" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="iigeoywq, 博客, 个人网站, 图形学, GIS, 座舱, 车载, Andorid, 系统">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>Android图形系统-窗口子系统 | </title>
+
+    <link rel="canonical" href="/2023/03/03/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link href="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@5.15.1/css/all.css" rel="stylesheet" type="text/css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">FQ Blog</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/tech">tech</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/archive/">ARCHIVE</a></li>
+                    
+                        <li><a href="/notes/">NOTES</a></li>
+                    
+                        <li><a href="/about/">ABOUT</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/home-bg-jeep.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/istio" title="Istio">
+                            Istio
+                        </a>
+                        
+                    </div>
+                    <h1>Android图形系统-窗口子系统</h1>
+                    <h2 class="subheading">合成</h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                    &#34;iigeoywq button&#34;
+                             
+                            on 
+                            Friday, March 3, 2023
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <blockquote>
+<p>上一篇提到layer创建后，并申请buffer绘制，接着需要给layer设置对应的displayid，并设置合成类型（GPU/HWC），最终提交HWC合成。</p>
+</blockquote>
+<h2 id="一-窗口子系统合成架构">一 窗口子系统（合成）架构</h2>
+<p>合成主要是在SF和HWC测完成,先说几个概念。
+|  SF    | HWC Client  | HWC Server| 备注|
+|  &mdash;-  | &mdash;-  |&mdash;-|&mdash;&ndash;|
+|   | HWC2::Device  |hw_device_t|dpu的抽象|
+|DisplayDevice |HWC2::Display  | hw_display_t |显示屏幕抽象（物理屏幕或者虚拟显示屏）|
+|Layer|HWC2::Layer |hw_layer_t|叠加图形抽象|</p>
+<h2 id="二-源码分析">二 源码分析</h2>
+<p>接前2篇的分析，app进程收到vsync-app信号后，开始绘制，同时sf进程收到vsync-sf信号，开始寻找可以合并的layer。
+合成layer需要设置displayid，首先需要通过HWC拿到display数组。</p>
+<h3 id="21-打开hwc拿到hw_device_t">2.1 打开hwc拿到hw_device_t</h3>
+<p>系统启动后，init会解析hardware/interfaces/graphics/composer/2.x/default/android.hardware.graphics.composer@2.2-service.rc文件，启动服务进程，来到service.cpp的main函数，调用HwcLoader::load()方法。</p>
+<pre><code>/*hardware/interfaces/graphics/composer/2.2/default/service.cpp*/
+int main() {
+    ...
+    // 1. 加载hwc模块
+    android::sp&lt;IComposer&gt; composer = HwcLoader::load();
+    if (composer == nullptr) {
+        return 1;
+    }
+    if (composer-&gt;registerAsService() != android::NO_ERROR) {
+        ALOGE(&quot;failed to register service&quot;);
+        return 1;
+    }
+    ...
+}
+
+/*hardware/interfaces/graphics/composer/2.2/utils/passthrough/include/composer-passthrough/2.2/HwcLoader.h*/
+static IComposer* load() {
+    //1.1 hw_module_t 定义在hardware.h中，表示一个硬件模块,加载hwc模块
+    const hw_module_t* module = loadModule();
+    if (!module) {
+        return nullptr;
+    }
+    //1.2 获取hwc2_device_t
+    auto hal = createHalWithAdapter(module);
+    if (!hal) {
+        return nullptr;
+    }
+    return createComposer(std::move(hal)).release();
+}
+
+/*hardware/interfaces/graphics/composer/2.1/utils/passthrough/include/composer-passthrough/2.1/HwcLoader.h*/
+static const hw_module_t* loadModule() {
+    const hw_module_t* module;
+    //1.1.1 加载厂商实现的so库，例如高通vendor/lib64/hw/hwcomposer.sdmxxx.so(HWC2)
+    int error = hw_get_module(HWC_HARDWARE_MODULE_ID, &amp;module);
+    if (error) {
+        ALOGI(&quot;falling back to gralloc module&quot;);
+        error = hw_get_module(GRALLOC_HARDWARE_MODULE_ID, &amp;module);
+    }
+    if (error) {
+        ALOGE(&quot;failed to get hwcomposer or gralloc module&quot;);
+        return nullptr;
+    }
+    return module;
+}
+
+// 接1.2 获取hwc2_device_t指针
+static std::unique_ptr&lt;hal::ComposerHal&gt; createHalWithAdapter(const hw_module_t* module) {
+        bool adapted;
+        //1.2.1 
+        hwc2_device_t* device = openDeviceWithAdapter(module, &amp;adapted);
+        if (!device) {
+            return nullptr;
+        }
+        auto hal = std::make_unique&lt;HwcHal&gt;();
+        //1.2.2
+        return hal-&gt;initWithDevice(std::move(device), !adapted) ? std::move(hal) : nullptr;
+}
+
+open hwcomposer2 device, install an adapter if necessary
+static hwc2_device_t* openDeviceWithAdapter(const hw_module_t* module, bool* outAdapted) {
+    if (module-&gt;id &amp;&amp; std::string(module-&gt;id) == GRALLOC_HARDWARE_MODULE_ID) {
+        *outAdapted = true;
+        return adaptGrallocModule(module);
+    }
+    hw_device_t* device;
+    //1.2.1.1 打开驱动，拿到hwc2_device_t（代表一个hwc设备）
+    int error = module-&gt;methods-&gt;open(module, HWC_HARDWARE_COMPOSER, &amp;device);
+    if (error) {
+        ALOGE(&quot;failed to open hwcomposer device: %s&quot;, strerror(-error));
+        return nullptr;
+    }
+    int major = (device-&gt;version &gt;&gt; 24) &amp; 0xf;
+    if (major != 2) {
+        *outAdapted = true;
+        return adaptHwc1Device(std::move(reinterpret_cast&lt;hwc_composer_device_1*&gt;(device)));
+    }
+    *outAdapted = false;
+        return reinterpret_cast&lt;hwc2_device_t*&gt;(device);
+}
+
+</code></pre><p>接1.2.1 来到厂商实现</p>
+<pre><code>/*hardware/qcom/sdm845/display/sdm/libs/hwc2/hwc_session.cpp*/
+int HWCSession::Open(const hw_module_t *module, const char *name, hw_device_t **device) {
+  if (!module || !name || !device) {
+    DLOGE(&quot;Invalid parameters.&quot;);
+    return -EINVAL;
+  }
+
+  if (!strcmp(name, HWC_HARDWARE_COMPOSER)) {
+    HWCSession *hwc_session = new HWCSession(module);
+    if (!hwc_session) {
+      return -ENOMEM;
+    }
+
+    int status = hwc_session-&gt;Init();
+    if (status != 0) {
+      delete hwc_session;
+      hwc_session = NULL;
+      return status;
+    }
+
+    hwc2_device_t *composer_device = hwc_session;
+    *device = reinterpret_cast&lt;hw_device_t *&gt;(composer_device);
+  }
+
+  return 0;
+}
+
+int HWCSession::Init() {
+  SCOPE_LOCK(locker_[HWC_DISPLAY_PRIMARY]);
+
+  int status = -EINVAL;
+  const char *qservice_name = &quot;display.qservice&quot;;
+  .....
+
+  // If HDMI display is primary display, defer display creation until hotplug event is received.
+  HWDisplayInterfaceInfo hw_disp_info = {};
+  error = core_intf_-&gt;GetFirstDisplayInterfaceType(&amp;hw_disp_info);
+  ......
+
+  if (hw_disp_info.type == kHDMI) {
+    status = 0;
+    hdmi_is_primary_ = true;
+    // Create display if it is connected, else wait for hotplug connect event.
+    if (hw_disp_info.is_connected) {
+      //创建扩展屏幕
+      status = CreateExternalDisplay(HWC_DISPLAY_PRIMARY, 0, 0, false);
+    }
+  } else {
+    // Create and power on primary display
+    //创建主屏幕
+    status = HWCDisplayPrimary::Create(core_intf_, &amp;buffer_allocator_, &amp;callbacks_, qservice_,
+                                       &amp;hwc_display_[HWC_DISPLAY_PRIMARY]);
+    color_mgr_ = HWCColorManager::CreateColorManager(&amp;buffer_allocator_);
+    if (!color_mgr_) {
+      DLOGW(&quot;Failed to load HWCColorManager.&quot;);
+    }
+  }
+  ......
+  return 0;
+}
+</code></pre><h3 id="22-sf测启动并向hwc服务注册callback获取热插拔的display-id-保存到displaydevices数组">2.2 SF测启动并向HWC服务注册callback，获取热插拔的display id 保存到displayDevices数组</h3>
+<p>sf进程启动后，做了好几件事情，我们接下主要关注hwc的初始化和hwc注册callback</p>
+<pre><code>/*frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp*/
+void SurfaceFlinger::init() {
+    ALOGI(  &quot;SurfaceFlinger's main thread ready to run. &quot;
+            &quot;Initializing graphics H/W...&quot;);
+    Mutex::Autolock _l(mStateLock);
+
+    // Get a RenderEngine for the given display / config (can't fail)
+    // TODO(b/77156734): We need to stop casting and use HAL types when possible.
+    // Sending maxFrameBufferAcquiredBuffers as the cache size is tightly tuned to single-display.
+    //1. 创建RenderEngine对象（准备egl环境），用来做gpu合成
+    mCompositionEngine-&gt;setRenderEngine(renderengine::RenderEngine::create(
+            renderengine::RenderEngineCreationArgs::Builder()
+                .setPixelFormat(static_cast&lt;int32_t&gt;(defaultCompositionPixelFormat))
+                .setImageCacheSize(maxFrameBufferAcquiredBuffers)
+                .setUseColorManagerment(useColorManagement)
+                .setEnableProtectedContext(enable_protected_contents(false))
+                .setPrecacheToneMapperShaderOnly(false)
+                .setSupportsBackgroundBlur(mSupportsBlur)
+                .setContextPriority(useContextPriority
+                        ? renderengine::RenderEngine::ContextPriority::HIGH
+                        : renderengine::RenderEngine::ContextPriority::MEDIUM)
+                .build()));
+    // 2.初始化hwc环境，最终和hwc server接口层hardware/interfaces/graphics/composer/2.1/IComposer.hal关联
+    mCompositionEngine-&gt;setHwComposer(getFactory().createHWComposer(getBE().mHwcServiceName));
+    //3 向hwc server注册，监听一些状态变化
+    mCompositionEngine-&gt;getHwComposer().setConfiguration(this, getBE().mComposerSequenceId);
+    // Process any initial hotplug and resulting display changes.
+    //4 处理hwc server的热插拔回调
+    processDisplayHotplugEventsLocked();
+    const auto display = getDefaultDisplayDeviceLocked();
+    LOG_ALWAYS_FATAL_IF(!display, &quot;Missing internal display after registering composer callback.&quot;);
+    LOG_ALWAYS_FATAL_IF(!getHwComposer().isConnected(*display-&gt;getId()),
+                        &quot;Internal display is disconnected.&quot;);
+
+    // 5. initialize our drawing state
+    //mDrawingState和mCurrentState用来比较layer是否变化
+    mDrawingState = mCurrentState;
+
+    // 6. set initial conditions (e.g. unblank default device)
+    initializeDisplays();
+    ....
+}
+</code></pre><h4 id="221-hwc初始化和server端关联">2.2.1 hwc初始化和server端关联</h4>
+<p>接2.2的2 来到SurfaceFlingerDefaultFactory的createHWComposer方法</p>
+<pre><code>/* frameworks/native/services/surfaceflinger/SurfaceFlingerDefaultFactory.cpp*/
+std::unique_ptr&lt;HWComposer&gt; DefaultFactory::createHWComposer(const std::string&amp; serviceName) {
+    return std::make_unique&lt;android::impl::HWComposer&gt;(serviceName);
+}
+
+/*frameworks/native/services/surfaceflinger/DisplayHardware/HWComposer.cpp*/
+namespace android {
+    .....
+namespace impl {
+    .....
+HWComposer::HWComposer(const std::string&amp; composerServiceName)
+      : mComposer(std::make_unique&lt;Hwc2::impl::Composer&gt;(composerServiceName)) {
+}
+    .....
+    }
+    }
+
+/*frameworks/native/services/surfaceflinger/DisplayHardware/ComposerHal.cpp*/
+namespace Hwc2 {
+    .....
+    namespace impl {
+        ......
+//1 创建mComposer对象
+Composer::Composer(const std::string&amp; serviceName)
+    : mWriter(kWriterInitialSize),
+      mIsUsingVrComposer(serviceName == std::string(&quot;vr&quot;))
+{
+    //2 Composer和hardware/interfaces/graphics/composer/2.1/IComposer.hal关联
+    mComposer = V2_1::IComposer::getService(serviceName);
+    ....
+
+    if (sp&lt;IComposer&gt; composer_2_4 = IComposer::castFrom(mComposer)) {
+        //3.1 client和hardware/interfaces/graphics/composer/2.4/IComposerClient.hal关联
+        composer_2_4-&gt;createClient_2_4([&amp;](const auto&amp; tmpError, const auto&amp; tmpClient) {
+            if (tmpError == V2_4::Error::NONE) {
+                mClient = tmpClient;
+                mClient_2_2 = tmpClient;
+                mClient_2_3 = tmpClient;
+                mClient_2_4 = tmpClient;
+            }
+        });
+    } else if (sp&lt;V2_3::IComposer&gt; composer_2_3 = V2_3::IComposer::castFrom(mComposer)) {
+        //3.2 client和hardware/interfaces/graphics/composer/2.3/IComposerClient.hal关联
+        composer_2_3-&gt;createClient_2_3([&amp;](const auto&amp; tmpError, const auto&amp; tmpClient) {
+            if (tmpError == Error::NONE) {
+                mClient = tmpClient;
+                mClient_2_2 = tmpClient;
+                mClient_2_3 = tmpClient;
+            }
+        });
+    } else {
+        //3.2 client和hardware/interfaces/graphics/composer/2.2/IComposerClient.hal关联
+        mComposer-&gt;createClient([&amp;](const auto&amp; tmpError, const auto&amp; tmpClient) {
+            if (tmpError != Error::NONE) {
+                return;
+            }
+            
+            mClient = tmpClient;
+            if (sp&lt;V2_2::IComposer&gt; composer_2_2 = V2_2::IComposer::castFrom(mComposer)) {
+                mClient_2_2 = V2_2::IComposerClient::castFrom(mClient);
+                LOG_ALWAYS_FATAL_IF(mClient_2_2 == nullptr,
+                                    &quot;IComposer 2.2 did not return IComposerClient 2.2&quot;);
+            }
+        });
+    }
+}
+......
+}
+......
+}
+</code></pre><h4 id="222-sf向hwc-server注册callback">2.2.2 SF向hwc server注册callback</h4>
+<p>接2.2的3 来到SurfaceFlingerDefaultFactory的createHWComposer方法</p>
+<pre><code>/*frameworks/native/services/surfaceflinger/DisplayHardware/HWComposer.cpp*/
+void HWComposer::setConfiguration(HWC2::ComposerCallback* callback, int32_t sequenceId) {
+    loadCapabilities();
+    loadLayerMetadataSupport();
+
+    if (mRegisteredCallback) {
+        ALOGW(&quot;Callback already registered. Ignored extra registration attempt.&quot;);
+        return;
+    }
+    mRegisteredCallback = true;
+    sp&lt;ComposerCallbackBridge&gt; callbackBridge(
+            new ComposerCallbackBridge(callback, sequenceId,
+                                       mComposer-&gt;isVsyncPeriodSwitchSupported()));
+    //这里的mComposer是2.2.1 中1 创建mComposer
+    mComposer-&gt;registerCallback(callbackBridge);
+}
+
+/*frameworks/native/services/surfaceflinger/DisplayHardware/ComposerHal.cpp*/
+void Composer::registerCallback(const sp&lt;IComposerCallback&gt;&amp; callback)
+{
+    android::hardware::setMinSchedulerPolicy(callback, SCHED_FIFO, 2);
+    auto ret = [&amp;]() {
+        if (mClient_2_4) {
+            return mClient_2_4-&gt;registerCallback_2_4(callback);
+        }
+        //向hwc server 测的hardware/interfaces/graphics/composer/2.1/IComposerClient.hal注册callback
+        return mClient-&gt;registerCallback(callback);
+    }();
+    ......
+}
+
+/*hardware/interfaces/graphics/composer/2.1/IComposerClient.hal*/ 这是Hwc server接口层
+interface IComposerClient {
+    ....
+    @entry
+    @callflow(next=&quot;*&quot;)
+    registerCallback(IComposerCallback callback);
+    }
+    ....
+    }
+/*hardware/interfaces/graphics/composer/2.1/utils/hal/include/composer-hal/2.1/ComposerClient.h*/
+    Return&lt;void&gt; registerCallback(const sp&lt;IComposerCallback&gt;&amp; callback) override {
+        // no locking as we require this function to be called only once
+        mHalEventCallback = std::make_unique&lt;HalEventCallback&gt;(callback, mResources.get());
+        mHal-&gt;registerEventCallback(mHalEventCallback.get());
+        return Void();
+    }
+
+/* hardware/interfaces/graphics/composer/2.1/utils/passthrough/include/composer-passthrough/2.1/HwcHal.h*/
+void registerEventCallback(hal::ComposerHal::EventCallback* callback) override {
+        mEventCallback = callback;
+        
+        mDispatch.registerCallback(mDevice, HWC2_CALLBACK_HOTPLUG, this,
+                                   reinterpret_cast&lt;hwc2_function_pointer_t&gt;(hotplugHook));
+        mDispatch.registerCallback(mDevice, HWC2_CALLBACK_REFRESH, this,
+                                   reinterpret_cast&lt;hwc2_function_pointer_t&gt;(refreshHook));
+        mDispatch.registerCallback(mDevice, HWC2_CALLBACK_VSYNC, this,
+                                   reinterpret_cast&lt;hwc2_function_pointer_t&gt;(vsyncHook));
+    }
+</code></pre><p>来到厂商的so库</p>
+<pre><code>/*hardware/qcom/sdm845/display/sdm/libs/hwc2/hwc_session.cpp*/
+int32_t HWCSession::RegisterCallback(hwc2_device_t *device, int32_t descriptor,
+                                     hwc2_callback_data_t callback_data,
+                                     hwc2_function_pointer_t pointer) {
+  if (!device) {
+    return HWC2_ERROR_BAD_PARAMETER;
+  }
+  HWCSession *hwc_session = static_cast&lt;HWCSession *&gt;(device);
+  SCOPE_LOCK(hwc_session-&gt;callbacks_lock_);
+  auto desc = static_cast&lt;HWC2::Callback&gt;(descriptor);
+  auto error = hwc_session-&gt;callbacks_.Register(desc, callback_data, pointer);
+  DLOGD(&quot;%s callback: %s&quot;, pointer ? &quot;Registering&quot; : &quot;Deregistering&quot;, to_string(desc).c_str());
+  //最终调到显示设备，判断是否有热插拔，并层层回调给sf测
+  if (descriptor == HWC2_CALLBACK_HOTPLUG) {
+    if (hwc_session-&gt;hwc_display_[HWC_DISPLAY_PRIMARY]) {
+      hwc_session-&gt;callbacks_.Hotplug(HWC_DISPLAY_PRIMARY, HWC2::Connection::Connected);
+    }
+  }
+  hwc_session-&gt;need_invalidate_ = false;
+  hwc_session-&gt;callbacks_lock_.Broadcast();
+  return INT32(error);
+}
+</code></pre><h3 id="23-sf测收到callback通知保存displayid-数组">2.3 SF测收到callback通知，保存displayid 数组</h3>
+<p>如果显示屏幕插拔，SF测通过2.2.2的层层回调收到通知，上述的callback包括一个onHotplugReceived通知；
+来到</p>
+<pre><code>/*frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp*/
+
+void SurfaceFlinger::onHotplugReceived(int32_t sequenceId, hal::HWDisplayId hwcDisplayId,
+                                       hal::Connection connection) {
+    ALOGV(&quot;%s(%d, %&quot; PRIu64 &quot;, %s)&quot;, __FUNCTION__, sequenceId, hwcDisplayId,
+          connection == hal::Connection::CONNECTED ? &quot;connected&quot; : &quot;disconnected&quot;);
+
+    ....
+    //1 保存热插拔事件
+    mPendingHotplugEvents.emplace_back(HotplugEvent{hwcDisplayId, connection});
+
+    if (std::this_thread::get_id() == mMainThreadId) {
+        // Process all pending hot plug events immediately if we are on the main thread.
+        processDisplayHotplugEventsLocked();
+    }
+    ...
+    setTransactionFlags(eDisplayTransactionNeeded);
+}
+
+
+先看一下state数据结构
+/*frameworks/native/services/surfaceflinger/SurfaceFlinger.h*/
+class State {
+    public:
+        .....
+        const LayerVector::StateSet stateSet = LayerVector::StateSet::Invalid;
+        // layer 数组
+        LayerVector layersSortedByZ;
+        // display数组
+        DefaultKeyedVector&lt; wp&lt;IBinder&gt;, DisplayDeviceState&gt; displays;
+        ....
+    };
+sf中存2个状态
+mCurrentState -当前需要修改的state
+mDrawingState -上次的state
+
+void SurfaceFlinger::processDisplayHotplugEventsLocked() {
+    for (const auto&amp; event : mPendingHotplugEvents) {
+        std::optional&lt;DisplayIdentificationInfo&gt; info =
+                getHwComposer().onHotplug(event.hwcDisplayId, event.connection);
+        ....
+        //循环获取displayid
+        const auto displayId = info-&gt;id;
+        const auto token = mPhysicalDisplayTokens.get(displayId);
+        ....
+        DisplayDeviceState state;
+        state.physical = {displayId, getHwComposer().getDisplayConnectionType(displayId),
+                                  event.hwcDisplayId};
+        //mCurrentState displays数组保存数据
+        mCurrentState.displays.add(token, state);
+        ....
+        processDisplayChangesLocked();
+    }
+
+    mPendingHotplugEvents.clear();
+}
+
+
+/*frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp*/
+void SurfaceFlinger::processDisplayChangesLocked() {
+    // here we take advantage of Vector's copy-on-write semantics to
+    // improve performance by skipping the transaction entirely when
+    // know that the lists are identical
+    //比较前后stage中display的变化，可知display的增减
+    const KeyedVector&lt;wp&lt;IBinder&gt;, DisplayDeviceState&gt;&amp; curr(mCurrentState.displays);
+    const KeyedVector&lt;wp&lt;IBinder&gt;, DisplayDeviceState&gt;&amp; draw(mDrawingState.displays);
+    if (!curr.isIdenticalTo(draw)) {
+        mVisibleRegionsDirty = true;
+
+        // find the displays that were removed
+        // (ie: in drawing state but not in current state)
+        // also handle displays that changed
+        // (ie: displays that are in both lists)
+        for (size_t i = 0; i &lt; draw.size(); i++) {
+            const wp&lt;IBinder&gt;&amp; displayToken = draw.keyAt(i);
+            const ssize_t j = curr.indexOfKey(displayToken);
+            if (j &lt; 0) {
+                // in drawing state but not in current state
+                processDisplayRemoved(displayToken);
+            } else {
+                // this display is in both lists. see if something changed.
+                const DisplayDeviceState&amp; currentState = curr[j];
+                const DisplayDeviceState&amp; drawingState = draw[i];
+                processDisplayChanged(displayToken, currentState, drawingState);
+            }
+        }
+
+        // find displays that were added
+        // (ie: in current state but not in drawing state)
+        for (size_t i = 0; i &lt; curr.size(); i++) {
+            const wp&lt;IBinder&gt;&amp; displayToken = curr.keyAt(i);
+            if (draw.indexOfKey(displayToken) &lt; 0) {
+                processDisplayAdded(displayToken, curr[i]);
+            }
+        }
+    }
+
+    mDrawingState.displays = mCurrentState.displays;
+}
+
+void SurfaceFlinger::processDisplayAdded(const wp&lt;IBinder&gt;&amp; displayToken,
+                                         const DisplayDeviceState&amp; state) {
+    .....
+
+    compositionengine::DisplayCreationArgsBuilder builder;
+    if (const auto&amp; physical = state.physical) {
+        builder.setId(physical-&gt;id);
+    } else {
+        builder.setId(acquireVirtualDisplay(resolution, pixelFormat));
+    }
+
+    builder.setPixels(resolution);
+    builder.setIsSecure(state.isSecure);
+    builder.setPowerAdvisor(mPowerAdvisor.get());
+    builder.setName(state.displayName);
+    auto compositionDisplay = getCompositionEngine().createDisplay(builder.build());
+    compositionDisplay-&gt;setLayerCachingEnabled(mLayerCachingEnabled);
+
+    sp&lt;compositionengine::DisplaySurface&gt; displaySurface;
+    sp&lt;IGraphicBufferProducer&gt; producer;
+    sp&lt;IGraphicBufferProducer&gt; bqProducer;
+    sp&lt;IGraphicBufferConsumer&gt; bqConsumer;
+    getFactory().createBufferQueue(&amp;bqProducer, &amp;bqConsumer, /*consumerIsSurfaceFlinger =*/false);
+
+    if (state.isVirtual()) {
+        const auto displayId = VirtualDisplayId::tryCast(compositionDisplay-&gt;getId());
+        LOG_FATAL_IF(!displayId);
+        auto surface = sp&lt;VirtualDisplaySurface&gt;::make(getHwComposer(), *displayId, state.surface,
+                                                       bqProducer, bqConsumer, state.displayName);
+        displaySurface = surface;
+        producer = std::move(surface);
+    } else {
+        ALOGE_IF(state.surface != nullptr,
+                 &quot;adding a supported display, but rendering &quot;
+                 &quot;surface is provided (%p), ignoring it&quot;,
+                 state.surface.get());
+        const auto displayId = PhysicalDisplayId::tryCast(compositionDisplay-&gt;getId());
+        LOG_FATAL_IF(!displayId);
+        displaySurface =
+                sp&lt;FramebufferSurface&gt;::make(getHwComposer(), *displayId, bqConsumer,
+                                             state.physical-&gt;activeMode-&gt;getResolution(),
+                                             ui::Size(maxGraphicsWidth, maxGraphicsHeight));
+        producer = bqProducer;
+    }
+
+    LOG_FATAL_IF(!displaySurface);
+    auto display = setupNewDisplayDeviceInternal(displayToken, std::move(compositionDisplay), state,
+                                                 displaySurface, producer);
+    //最后把新增的display存入数组，至此sf测的display数组拿到了hwc测的displayid                                             
+    mDisplays.try_emplace(displayToken, std::move(display)); 
+}
+</code></pre><h3 id="24-sf进程收到vsync-sf信号开始合成">2.4 sf进程收到vsync-sf信号开始合成</h3>
+
+
+                
+                
+<div class="entry-shang text-center">
+    
+	    <p>「真诚赞赏，手留余香」</p>
+	
+	<button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+	<div class="zs-modal-head">
+		<button type="button" class="close">×</button>
+		<span class="author"><a href="https://ywqyunshan.github.io/"><img src="/img/favicon.png" />FQ Blog</a></span>
+        
+	        <p class="tip"><i></i><span>真诚赞赏，手留余香</span></p>
+		
+ 
+	</div>
+	<div class="zs-modal-body">
+		<div class="zs-modal-btns">
+			<button class="btn btn-blink" data-num="2">2元</button>
+			<button class="btn btn-blink" data-num="5">5元</button>
+			<button class="btn btn-blink" data-num="10">10元</button>
+			<button class="btn btn-blink" data-num="50">50元</button>
+			<button class="btn btn-blink" data-num="100">100元</button>
+			<button class="btn btn-blink" data-num="1">任意金额</button>
+		</div>
+		<div class="zs-modal-pay">
+			<button class="btn btn-bred" id="pay-text">2元</button>
+			<p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+			<img src="/img/reward/wechat-2.png"  id="pay-image"/>
+		</div>
+	</div>
+	<div class="zs-modal-footer">
+		<label><input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked"><span ><span class="zs-wechat"><img src="/img/reward/wechat-btn.png"/></span></label>
+		<label><input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay"><img src="/img/reward/alipay-btn.png"/></span></label>
+	</div>
+</div>
+<script type="text/javascript" src="/js/reward.js"></script>
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2023/02/22/" data-toggle="tooltip" data-placement="top" title="Android图形系统-渲染子系统">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+                
+
+                
+
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        <a href="/tags/istio" title="istio">
+                            istio
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+                <section>
+                    <hr>
+                    <h5>FRIENDS</h5>
+                    <ul class="list-inline">
+                        
+                        <li><a target="_blank" href="https://www.jianshu.com/u/e9dc7e422257">iigeoywq的博客</a></li>
+                        
+                    </ul>
+                </section>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:youremail@gmail.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    <li>
+                        <a target="_blank" href="/your%20wechat%20qr%20code%20image">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-weixin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/yourgithub">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/yourlinkedinid">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://stackoverflow.com/users/yourstackoverflowid">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="FQ Blog" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; FQ Blog 2023
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>

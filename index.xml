@@ -6,10 +6,19 @@
     <description>Recent content on FQ Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 22 Feb 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 03 Mar 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://ywqyunshan.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Android图形系统-窗口子系统</title>
+      <link>https://ywqyunshan.github.io/2023/03/03/</link>
+      <pubDate>Fri, 03 Mar 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://ywqyunshan.github.io/2023/03/03/</guid>
+      <description>上一篇提到layer创建后，并申请buffer绘制，接着需要给layer设置对应的displayid，并设置合成类型（GPU/HWC），最终</description>
+    </item>
     
     <item>
       <title>Android图形系统-渲染子系统</title>
@@ -17,7 +26,7 @@
       <pubDate>Wed, 22 Feb 2023 00:00:00 +0000</pubDate>
       
       <guid>https://ywqyunshan.github.io/2023/02/22/</guid>
-      <description>渲染主要分申请buffer，cpu/gpu渲染和提交buffer。 本篇主要讲一下buffer的申请，以及渲染，提交buffer的流程是一样的</description>
+      <description>渲染主要分申请buffer，cpu/gpu渲染和提交buffer。 本篇主要讲一下buffer的申请，以及渲染，提交buffer。 一 渲染子系统</description>
     </item>
     
     <item>
