@@ -6,10 +6,19 @@
     <description>Recent content in Istio on FQ Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 03 Mar 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 28 Apr 2023 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://ywqyunshan.github.io/tags/istio/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>基于DMA-BUF的ZERO-COPY技术</title>
+      <link>https://ywqyunshan.github.io/2023/04/28/</link>
+      <pubDate>Fri, 28 Apr 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://ywqyunshan.github.io/2023/04/28/</guid>
+      <description>一 前言 现在做一个车机项目，是基于Linux系统上面的wayland应用，目前有一个瓶颈在于从client到server这边图形数据的传送需要</description>
+    </item>
     
     <item>
       <title>Android图形系统-窗口子系统-合成</title>
