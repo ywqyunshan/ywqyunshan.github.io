@@ -17,7 +17,7 @@
       <pubDate>Fri, 28 Apr 2023 00:00:00 +0000</pubDate>
       
       <guid>https://ywqyunshan.github.io/2023/04/28/</guid>
-      <description>一 前言 现在做一个车机项目，是基于Linux系统上面的wayland应用，目前有一个瓶颈在于从client到server这边图形数据的传送需要</description>
+      <description>现在做一个车机项目，是基于Linux系统上面的wayland应用，目前有一个瓶颈在于从client到server这边图形数据的传送需要通过g</description>
     </item>
     
     <item>

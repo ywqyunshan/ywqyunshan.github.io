@@ -1,24 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>FQ Blog</title>
-    <link>https://ywqyunshan.github.io/</link>
-    <description>Recent content on FQ Blog</description>
+    <title>系统理论 on FQ Blog</title>
+    <link>https://ywqyunshan.github.io/tags/%E7%B3%BB%E7%BB%9F%E7%90%86%E8%AE%BA/</link>
+    <description>Recent content in 系统理论 on FQ Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 28 Apr 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 03 Mar 2023 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://ywqyunshan.github.io/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://ywqyunshan.github.io/tags/%E7%B3%BB%E7%BB%9F%E7%90%86%E8%AE%BA/index.xml" rel="self" type="application/rss+xml" />
     
-    
-    <item>
-      <title>基于DMA-BUF的ZERO-COPY技术</title>
-      <link>https://ywqyunshan.github.io/2023/04/28/</link>
-      <pubDate>Fri, 28 Apr 2023 00:00:00 +0000</pubDate>
-      
-      <guid>https://ywqyunshan.github.io/2023/04/28/</guid>
-      <description>现在做一个车机项目，是基于Linux系统上面的wayland应用，目前有一个瓶颈在于从client到server这边图形数据的传送需要通过g</description>
-    </item>
     
     <item>
       <title>Android图形系统-窗口子系统-合成</title>
@@ -67,42 +58,6 @@
       <description>&lt;blockquote&gt;
 &lt;p&gt;任何问题都会有一个前置条件，为了进一步学习操作系统，梳理一下计算机系统学习的前置知识，本文主要记录&lt;a href=&#34;https://www.bilibili.com/video/BV1EW411u7th/?p=1&amp;amp;share_medium=iphone&amp;amp;share_plat=ios&amp;amp;share_source=COPY&amp;amp;share_tag=s_i&amp;amp;timestamp=1626958909&amp;amp;unique_k=a33Kwq&#34;&gt;【计算机科学速成课】[40集全/精校] - Crash Course Computer Science&lt;/a&gt;和《深入浅出计算机组成原理》学习笔记。&lt;/p&gt;
 &lt;/blockquote&gt;</description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>https://ywqyunshan.github.io/about/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://ywqyunshan.github.io/about/</guid>
-      <description>About Me </description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>https://ywqyunshan.github.io/notes/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://ywqyunshan.github.io/notes/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>https://ywqyunshan.github.io/search/placeholder/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://ywqyunshan.github.io/search/placeholder/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Posts Archive</title>
-      <link>https://ywqyunshan.github.io/archive/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://ywqyunshan.github.io/archive/</guid>
-      <description></description>
     </item>
     
   </channel>
