@@ -6,10 +6,19 @@
     <description>Recent content in Posts on FQ Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 28 Apr 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 02 Mar 2024 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://ywqyunshan.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Android HAL层演技和实现</title>
+      <link>https://ywqyunshan.github.io/2024/03/02/</link>
+      <pubDate>Sat, 02 Mar 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://ywqyunshan.github.io/2024/03/02/</guid>
+      <description>一 Android HAL层解决了什么问题？ Android的HAL层解决了什么问题？ HAL层向下屏蔽硬件实现，向上提供抽象接口，和所有的其他系统一样，提供硬</description>
+    </item>
     
     <item>
       <title>基于DMA-BUF的ZERO-COPY技术</title>
