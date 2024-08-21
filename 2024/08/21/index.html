@@ -15,9 +15,9 @@
     
 
     
-    <meta name="title" content="Android HAL层演进和实现" />
-    <meta property="og:title" content="Android HAL层演进和实现" />
-    <meta property="twitter:title" content="Android HAL层演进和实现" />
+    <meta name="title" content="Mesa3d环境编译" />
+    <meta property="og:title" content="Mesa3d环境编译" />
+    <meta property="twitter:title" content="Mesa3d环境编译" />
     
 
     
@@ -34,9 +34,9 @@
     <meta name="keyword"  content="iigeoywq, button, 博客, 个人网站, 图形学, GIS, 座舱, 车载, Andorid, 系统">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>Android HAL层演进和实现 | </title>
+    <title>Mesa3d环境编译 | </title>
 
-    <link rel="canonical" href="/2024/03/02/">
+    <link rel="canonical" href="/2024/08/21/">
 
     
     
@@ -175,7 +175,7 @@
                         </a>
                         
                     </div>
-                    <h1>Android HAL层演进和实现</h1>
+                    <h1>Mesa3d环境编译</h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
                         
@@ -184,7 +184,7 @@
                                     &#34;iigeoywq button&#34;
                              
                             on 
-                            Saturday, March 2, 2024
+                            Wednesday, August 21, 2024
                             
                             
                             
@@ -210,343 +210,176 @@
                 post-container">
 
                 
-                <h2 id="一-android-hal层解决了什么问题">一 Android HAL层解决了什么问题？</h2>
-<p>Android的HAL层解决了什么问题？</p>
-<ul>
-<li>HAL层向下屏蔽硬件实现，向上提供抽象接口，和所有的其他系统一样，提供硬件接口抽象层；</li>
-<li>解决了Linux 开源协议问题，保护了厂商的利益；</li>
-</ul>
-<p>
-  <img src="/img/hal.png" alt="Android HAL层实现方案">
-
-</p>
-<h2 id="二-android-hal层接口演进">二 Android HAL层接口演进</h2>
-<p>Android HAL层接口经历了3个阶段</p>
-<table>
-<thead>
-<tr>
-<th>接口</th>
-<th>系统版本</th>
-<th>说明</th>
-<th>接口定义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>传统接口</td>
-<td>4.4-7.0</td>
-<td>C风格接口</td>
-<td><a href="https://source.android.com/reference/hal?hl=zh-cn">https://source.android.com/reference/hal?hl=zh-cn</a></td>
-</tr>
-<tr>
-<td>HIDL</td>
-<td>8.0-10.0</td>
-<td>C++风格接口</td>
-<td><a href="https://source.android.com/docs/core/architecture/hidl/code-style?hl=zh-cn">https://source.android.com/docs/core/architecture/hidl/code-style?hl=zh-cn</a></td>
-</tr>
-<tr>
-<td>HAL-AIDL</td>
-<td>11.0-至今</td>
-<td>Android 风格接口</td>
-<td><a href="https://source.android.com/docs/core/architecture/aidl/aidl-hals?hl=zh-cn">https://source.android.com/docs/core/architecture/aidl/aidl-hals?hl=zh-cn</a></td>
-</tr>
-</tbody>
-</table>
+                <h2 id="一-mesa3d介绍">一 Mesa3d介绍</h2>
+<p>Mesa3ds 提供了OpenGL/OpengGL ES/OpenCL/Vulakn等图形API的实现，包含了如下一系列设备驱动程序，如freedreno/nouveau/tegra/radeonsi/asahi/amd/intel等。</p>
+<h2 id="二-编译">二 编译</h2>
 <ul>
 <li>
-<p>HIDL接口为了解耦Framework和vendor，这样当更新Framework时候不用编译hal层，hal层实现可以由厂商单独编译在vendor分区更新；</p>
+<p>环境：</p>
+<ul>
+<li>Ubuntu 22</li>
+<li>GCC &gt; 8.0.0</li>
+<li>python &gt; 3.6</li>
+</ul>
 </li>
 <li>
-<p>AIDL接口为了减少Android的binder通信通道；</p>
+<p>下载
+<a href="https://archive.mesa3d.org/mesa-23.3.6.tar.xz">mesa3d官方Release版本</a></p>
+</li>
+<li>
+<p>预安装</p>
 </li>
 </ul>
-<p>先简单介绍一下这三种接口规范：</p>
+<pre><code># mako version&gt;0.8.0
+pip install mako 
+
+# Flex versions &gt;2.5.35 ,Bison version&gt; 2.4.1
+sudo apt-get install msys-flex msys-bison 
+# mesa
+sudo apt-get build-dep mesa
+
+</code></pre><h3 id="21-编译linux库">2.1 编译linux库</h3>
 <ul>
-<li>传统接口定义规范
-hardware/libhardware/include/hardware/hardware.h</li>
+<li>编译</li>
 </ul>
-<pre><code>struct hw_module_t; //硬件模块名
-struct hw_module_methods_t; //硬件模块方法名
-struct hw_device_t;//硬件设备名称
+<pre><code>meson setup builddir/ --prefix=/home/code/mesa-23.3.6/builddir/out
+
+meson compile -C builddir/
+
+sudo meson install -C builddir/
+
 </code></pre><ul>
-<li>HIDL接口定义规范
-hardware/interfaces/foo/1.0/IFoo.hal</li>
+<li>输出</li>
 </ul>
-<pre><code>
-/*
- * (License Notice)
- */
+<pre><code>xxx@xxxx:/home/code/mesa-23.3.6/builddir/out/lib/x86_64-linux-gnu$ ls -la
+total 397276
+drwxr-xr-x 5 root root      4096  8月 21 15:35 .
+drwxr-xr-x 3 root root      4096  8月 21 15:35 ..
+drwxr-xr-x 2 root root      4096  8月 21 15:35 dri
+lrwxrwxrwx 1 root root        11  8月 21 15:35 libEGL.so -&gt; libEGL.so.1
+lrwxrwxrwx 1 root root        15  8月 21 15:35 libEGL.so.1 -&gt; libEGL.so.1.0.0
+-rwxr-xr-x 1 root root   1971224  8月 21 15:35 libEGL.so.1.0.0
+lrwxrwxrwx 1 root root        11  8月 21 15:35 libgbm.so -&gt; libgbm.so.1
+lrwxrwxrwx 1 root root        15  8月 21 15:35 libgbm.so.1 -&gt; libgbm.so.1.0.0
+-rwxr-xr-x 1 root root    528592  8月 21 15:33 libgbm.so.1.0.0
+lrwxrwxrwx 1 root root        13  8月 21 15:35 libglapi.so -&gt; libglapi.so.0
+lrwxrwxrwx 1 root root        17  8月 21 15:35 libglapi.so.0 -&gt; libglapi.so.0.0.0
+-rwxr-xr-x 1 root root    326368  8月 21 15:31 libglapi.so.0.0.0
+lrwxrwxrwx 1 root root        17  8月 21 15:35 libGLESv1_CM.so -&gt; libGLESv1_CM.so.1
+lrwxrwxrwx 1 root root        21  8月 21 15:35 libGLESv1_CM.so.1 -&gt; libGLESv1_CM.so.1.1.0
+-rwxr-xr-x 1 root root     29872  8月 21 15:35 libGLESv1_CM.so.1.1.0
+lrwxrwxrwx 1 root root        14  8月 21 15:35 libGLESv2.so -&gt; libGLESv2.so.2
+lrwxrwxrwx 1 root root        18  8月 21 15:35 libGLESv2.so.2 -&gt; libGLESv2.so.2.0.0
+-rwxr-xr-x 1 root root     56032  8月 21 15:35 libGLESv2.so.2.0.0
+lrwxrwxrwx 1 root root        10  8月 21 15:35 libGL.so -&gt; libGL.so.1
+lrwxrwxrwx 1 root root        14  8月 21 15:35 libGL.so.1 -&gt; libGL.so.1.2.0
+-rwxr-xr-x 1 root root   3037248  8月 21 15:35 libGL.so.1.2.0
+-rwxr-xr-x 1 root root  82404408  8月 21 15:33 libvulkan_intel_hasvk.so
+-rwxr-xr-x 1 root root 123468616  8月 21 15:33 libvulkan_intel.so
+-rwxr-xr-x 1 root root  58052120  8月 21 15:34 libvulkan_lvp.so
+-rwxr-xr-x 1 root root  82866696  8月 21 15:33 libvulkan_radeon.so
+lrwxrwxrwx 1 root root        17  8月 21 15:35 libxatracker.so -&gt; libxatracker.so.2
+lrwxrwxrwx 1 root root        21  8月 21 15:35 libxatracker.so.2 -&gt; libxatracker.so.2.5.0
+-rwxr-xr-x 1 root root  54022592  8月 21 15:34 libxatracker.so.2.5.0
+drwxr-xr-x 2 root root      4096  8月 21 15:35 pkgconfig
+drwxr-xr-x 2 root root      4096  8月 21 15:35 vdpau
+</code></pre><h3 id="22-交叉编译android库">2.2 交叉编译android库</h3>
+<ul>
+<li>
+<p>预安装NDK环境
+<a href="https://dl.google.com/android/repository/android-ndk-r27-linux.zip">NDK官方下载网站</a>
+我本地是通过android studio下载的NDK26.0.10792818</p>
+</li>
+<li>
+<p>配置交叉编译文件</p>
+</li>
+</ul>
+<pre><code># 新建交叉编译文件
+~/.local/share/meson/cross/android-aarch64
 
-package android.hardware.foo@1.0;
+## 内容如下：
+[binaries]
+ar = '/home/Android/Sdk/ndk/26.0.10792818/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar'
+c = ['ccache', '/home/Android/Sdk/ndk/26.0.10792818/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android31-clang']
+cpp = ['ccache', '/home/Android/Sdk/ndk/26.0.10792818/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android31-clang++', '-fno-exceptions', '-fno-unwind-tables', '-fno-asynchronous-unwind-tables', '-static-libstdc++']
+c_ld = 'lld'
+cpp_ld = 'lld'
+strip = '/home/Android/Sdk/ndk/26.0.10792818/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android-strip'
+# Android doesn't come with a pkg-config, but we need one for Meson to be happy not
+# finding all the optional deps it looks for.  Use system pkg-config pointing at a
+# directory we get to populate with any .pc files we want to add for Android
+#pkg-config = '/usr/bin/pkg-config'
 
-import android.hardware.bar@1.0::IBar;
-
-import IBaz;
-import IFooClientCallback;
-
-/**
- * IFoo is an interface that…
- */
-interface IFoo {
-
-    foo() generates (FooStatus result);
-
-    powerCycle(IBar bar) generates (FooStatus result);
-
-    /** Single line docstring. */
-    baz();
-
-    bar(IFooClientCallback clientCallback,
-        IBaz baz,
-        FooData data);
-
-};
+[host_machine]
+system = 'android'
+cpu_family = 'aarch64'
+cpu = 'armv8'
+endian = 'little'
 </code></pre><ul>
-<li>HAD-AIDL接口定义规范
-hardware/interfaces/foo/aidl/IFoo.aidl</li>
+<li>编译</li>
 </ul>
-<pre><code>    package my.package;
+<pre><code>## Dgallium-drivers 代表opengl驱动类型，Dvulkan-drivers 代表vulkan驱动类型
+meson setup build-android-aarch64 \
+    --prefix=/home/code/mesa-23.3.6/build-android-aarch64/out
+    --cross-file android-aarch64 \
+    -Dplatforms=android \
+    -Dplatform-sdk-version=31 \
+    -Dandroid-stub=true \
+    -Dgallium-drivers= \
+    -Dvulkan-drivers=freedreno \
+    -Dfreedreno-kmds=kgsl
 
-    import my.package.Baz; // defined elsewhere
+meson compile -C build-android-aarch64
 
-    interface IFoo {
-        void doFoo(Baz baz);
-    }
-</code></pre><h2 id="三-android-hal层接口和实现兼容">三 Android HAL层接口和实现兼容</h2>
-<p>每个版本上hal层的新增模块要用新接口规范，但是还存在兼容旧版本问题，所以关于hal层的实现有5种实现方案。</p>
-<p>
-  <img src="/img/hal%e4%ba%94%e7%a7%8d%e5%ae%9e%e7%8e%b0.png" alt="Hal层的五种实现方式">
-
-</p>
-<h2 id="四-android-hidl和aidl实战">四 Android HIDL和AIDL实战</h2>
-<p>着重实现一个上图种的第4和5方式</p>
-<h3 id="41-hidl实现">4.1 HIDL实现</h3>
-<ul>
-<li>注意：新增hidl服务，需要使用android11以下系统，android11及以上不支持新增hidl接口，会报错</li>
+</code></pre><ul>
+<li>输出</li>
 </ul>
-<pre><code>error: hardware/interfaces/testhidl/1.0/Android.bp:4:9: module &quot;android.hardware.testhidl@1.0_interface&quot;: name: No more HIDL interfaces can be added to Android. Please use AIDL.
-</code></pre><p>AOSP开源代码接口定义在hardware/interfaces/
-基线厂商或者手机厂商的定制ROM 可能定义在vendor/xxx/hardware/interfaces/</p>
-<p>下面添加一个testhidl hal模块</p>
-<h4 id="411-定义接口">4.1.1 定义接口</h4>
-<p>在hardware/interfaces/下创建testhidl/1.0/
-并创建接口文件ITesthidl.hal</p>
-<pre><code>
-package android.hardware.testhidl@1.0;
-
-interface ITesthidl {
-
-    setInfo(Info info) generates (Error error);
-};
-
-</code></pre><p>type.hal
-非必要，定义结构体</p>
-<pre><code>package android.hardware.testhidl@1.0;
-
-/** Return codes from all functions. */
-enum Error : int32_t {
-    NONE            = 0, /* no error */
-    BAD             = 1, /* bad */
-};
-
-typedef uint64_t Info;
-</code></pre><h4 id="412-使用hidl-gen自动生成代码">4.1.2 使用hidl-gen自动生成代码</h4>
+<pre><code>build-android-aarch64/src/freedreno/vulkan/libvulkan_freedreno.so
+</code></pre><h3 id="23-aosp源码仓库用mk编译mesa3d">2.3 aosp源码仓库用mk编译mesa3d</h3>
 <ul>
-<li>生成hidl interface android.bp 文件
-先确保AOSP全编译通过</li>
+<li>
+<p>前置条件,这个很重，可以参考我之前的文章下载aosp源码，先整编通过</p>
+</li>
+<li>
+<p>配置mesa3d库到soong编译环境</p>
+</li>
+</ul>
+<pre><code>## 根据你要lunch的设备进入对应的目录
+/home/code/Android_12_AOSP/device/google/bonito# vi device-sargo.mk
+
+增加下面一行
+# mesa
+PRODUCT_SOONG_NAMESPACES += external/mesa3d
+
+## 进入mesa3d 目录
+/home/win/code/Android_12_AOSP/external/mesa3d# vi Android.mk
+
+## 在文件开头增加下面宏
+BOARD_USE_CUSTOMIZED_MESA := false
+BOARD_GPU_DRIVERS := freedreno
+
+</code></pre><ul>
+<li>编译</li>
 </ul>
 <pre><code>source build/envsetup.sh
-lunch xx
-m hidk-gen
-./hardware/interfaces/update-makefiles.sh
-</code></pre><p>生成的Andoid.bp 文件,目录：/hardware/interfaces/testhidl/1.0/Andoid.bp
-如下；</p>
-<pre><code>// This file is autogenerated by hidl-gen -Landroidbp.
-
-hidl_interface {
-    name: &quot;android.hardware.testhidl@1.0&quot;,
-    root: &quot;android.hardware&quot;,
-    srcs: [
-        &quot;types.hal&quot;,
-        &quot;ITesthidl.hal&quot;,
-    ],
-    interfaces: [
-        &quot;android.hidl.base@1.0&quot;,
-    ],
-    gen_java: true,
-}
+lunch 33 (根据自己的设备，我是pixel3a)
+cd external/mesa3d执行mm
 </code></pre><ul>
-<li>生成hal service的实现类</li>
+<li>输出</li>
 </ul>
-<pre><code># 执行命令
-hidl-gen -o $LOC -Lc++-impl -randroid.hardware:hardware/interfaces -randroid.hidl:system/libhidl/transport $PACKAGE
-</code></pre><p>生成hal service的类，目录：/hardware/interfaces/testhidl/1.0/default/Testhidl.h
-如下
-头文件:Testhidl.h</p>
-<pre><code>// FIXME: your file license if you have one
-
-#pragma once
-
-#include &lt;android/hardware/testhidl/1.0/ITesthidl.h&gt;
-#include &lt;hidl/MQDescriptor.h&gt;
-#include &lt;hidl/Status.h&gt;
-
-namespace android::hardware::testhidl::implementation {
-
-using ::android::hardware::hidl_array;
-using ::android::hardware::hidl_memory;
-using ::android::hardware::hidl_string;
-using ::android::hardware::hidl_vec;
-using ::android::hardware::Return;
-using ::android::hardware::Void;
-using ::android::sp;
-
-struct Testhidl : public V1_0::ITesthidl {
-    // Methods from ::android::hardware::testhidl::V1_0::ITesthidl follow.
-    Return&lt;::android::hardware::testhidl::V1_0::Error&gt; setInfo(uint64_t info) override;
-
-    // Methods from ::android::hidl::base::V1_0::IBase follow.
-
-};
-
-// FIXME: most likely delete, this is only for passthrough implementations
-// extern &quot;C&quot; ITesthidl* HIDL_FETCH_ITesthidl(const char* name);
-
-}  // namespace android::hardware::testxidl::implementation
-</code></pre><p>实现类，目录：/hardware/interfaces/testhidl/1.0/default/Testhidl.cpp
-Testhidl.cpp</p>
-<pre><code>// FIXME: your file license if you have one
-
-#include &quot;Testhidl.h&quot;
-
-namespace android::hardware::testhidl::implementation {
-
-// Methods from ::android::hardware::testhidl::V1_0::ITesthidl follow.
-Return&lt;::android::hardware::testhidl::V1_0::Error&gt; Testhidl::setInfo(uint64_t info) {
-    // TODO implement
-    return ::android::hardware::testhidl::V1_0::Error {};
-}
-
-
-// Methods from ::android::hidl::base::V1_0::IBase follow.
-
-//ITesthidl* HIDL_FETCH_ITesthidl(const char* /* name */) {
-    //return new Testhidl();
-//}
-//
-}  // namespace android::hardware::testhidl::implementation
-</code></pre><ul>
-<li>生成hal service 的android.bp 文件</li>
-</ul>
-<pre><code># 执行命令
-PACKAGE=android.hardware.testhidl@1.0
-LOC=hardware/interfaces/testhidl/1.0/default/
-</code></pre><p>生成的hal service Andorid.bp 文件如下
-目录hardware/interfaces/testhidl/1.0/default/Andorid.bp</p>
-<pre><code>// FIXME: your file license if you have one
-
-cc_binary {
-    // FIXME: this should only be -impl for a passthrough hal.
-    // In most cases, to convert this to a binderized implementation, you should:
-    // - change '-impl' to '-service' here and make it a cc_binary instead of a
-    //   cc_library_shared.
-    // - add a *.rc file for this module.
-    // - delete HIDL_FETCH_I* functions.
-    // - call configureRpcThreadpool and registerAsService on the instance.
-    // You may also want to append '-impl/-service' with a specific identifier like
-    // '-vendor' or '-&lt;hardware identifier&gt;' etc to distinguish it.
-    name: &quot;android.hardware.testhidl@1.0-service&quot;,
-    relative_install_path: &quot;hw&quot;,
-    // FIXME: this should be 'vendor: true' for modules that will eventually be
-    // on AOSP.
-    init_rc: [&quot;android.hardware.testhidl@1.0-service.rc&quot;],
-    defaults: [&quot;hidl_defaults&quot;],
-    proprietary: true, //声明别安装在vendor目录
-    srcs: [
-        &quot;Testhidl.cpp&quot;,
-        &quot;service.cpp&quot;
-    ],
-    shared_libs: [
-        &quot;libhidlbase&quot;,
-        &quot;libutils&quot;,
-        &quot;libhidltransport&quot;,
-        &quot;android.hardware.testxidl@1.0&quot;,
-    ],
-}
-</code></pre><h4 id="413-开启自启动">4.1.3 开启自启动</h4>
-<ul>
-<li>创建自启动的service.cpp</li>
-</ul>
-<pre><code>
-#define LOG_TAG &quot;android.hardware.testhidl@1.0-service&quot;
-
-#include &lt;sched.h&gt;
-
-#include &lt;android/hardware/testhidl/1.0/ITesthidl.h&gt;
-
-#include &lt;hidl/LegacySupport.h&gt;
-using android::hardware::testhidl::V1_0::implementation::Testhidl;
-
-using android::hardware::testhidl::V1_0::ITesthidl;
-
-int main() {
-
-    ALOGE(&quot;testhidl service main&quot;);
-
-    android::hardware::configureRpcThreadpool(4, true /* will join */);
-    android::sp&lt;ITesthidl&gt; testhidl = new Testhidl();
-    if (testhidl == nullptr) {
-        return 1;
-    }
-    if (testhidl-&gt;registerAsService() != android::NO_ERROR) {
-        ALOGE(&quot;failed to register service&quot;);
-        return 1;
-    }
-
-    android::hardware::joinRpcThreadpool();
-
-    ALOGE(&quot;testhidl service is terminating&quot;);
-    return 1;
-}
-</code></pre><ul>
-<li>创建启动的rc
-在default目录下创建android.hardware.testhidl@1.0-service.rc文件</li>
-</ul>
-<pre><code>service vendor.testhidl-1-0 /vendor/bin/hw/android.hardware.testhidl@1.0-service
-    interface android.hardware.testhidl@1.0::ITesthidl default
-    class hal 
-    user system
-    group system
-     seclabel u:r:su:s0
-</code></pre><h4 id="414-注释hal-manifestxml">4.1.4 注释hal-manifest.xml</h4>
-<p>根据厂商的设备目录，下面是goldfish 设备
-device/generic/goldfish/manifest.xml</p>
-<pre><code>&lt;hal format=&quot;hidl&quot;&gt;
-    &lt;name&gt;android.hardware.testhidl&lt;/name&gt;
-    &lt;transport&gt;hwbinder&lt;/transport&gt;
-    &lt;version&gt;1.0&lt;/version&gt;
-    &lt;interface&gt;
-        &lt;name&gt;ITesthidl&lt;/name&gt;
-        &lt;instance&gt;default&lt;/instance&gt;
-    &lt;/interface&gt;
-&lt;/hal&gt;
-
-</code></pre><h4 id="415-编译">4.1.5 编译</h4>
-<ul>
-<li>声明product
-device/generic/goldfish/minimal_system.mk</li>
-</ul>
-<pre><code>PRODUCT_PACKAGES += \\
-    android.hardware.testhidl@1.0-service
-</code></pre><ul>
-<li>mmm ./hardware/interface/testhidl/1.0</li>
-</ul>
-<p>hal service输出的可执行目录：
-/out/target/product/xxx/vendor/bin/hw/
-<a href="mailto:android.hardware.testhidl@1.0-service">android.hardware.testhidl@1.0-service</a></p>
-<h2 id="42-aidl实现">4.2 AIDL实现</h2>
-<p>todo待验证</p>
-
+<pre><code>root@DESKTOP-BBMN2V1:/home/code/Android_12_AOSP/out/target/product/sargo/vendor/lib64# ls -la
+total 600
+drwxr-xr-x 5 root root   4096 Aug 18 12:23 .
+drwxr-xr-x 4 root root   4096 Aug 17 23:01 ..
+drwxr-xr-x 2 root root   4096 Aug 17 23:01 dri
+drwxr-xr-x 2 root root   4096 Aug 17 23:01 egl
+drwxr-xr-x 2 root root   4096 Aug 17 23:50 hw
+-rwxr-xr-x 1 root root  81632 Aug 17 23:01 libdrm.so
+-rwxr-xr-x 1 root root 131032 Aug 17 23:01 libdrm_intel.so
+-rwxr-xr-x 1 root root  32944 Aug 17 23:01 libgbm_mesa.so
+-rwxr-xr-x 1 root root 328784 Aug 17 23:01 libglapi.so
+-rwxr-xr-x 1 root root  10584 Aug 18 12:23 meson.dummy.64.so
+</code></pre>
 
                 
                 
@@ -595,15 +428,10 @@ device/generic/goldfish/minimal_system.mk</li>
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2023/04/28/" data-toggle="tooltip" data-placement="top" title="基于DMA-BUF的ZERO-COPY技术">&larr;
+                        <a href="/2024/03/02/" data-toggle="tooltip" data-placement="top" title="Android HAL层演进和实现">&larr;
                             Previous Post</a>
                     </li>
                     
-                    
-                    <li class="next">
-                        <a href="/2024/08/21/" data-toggle="tooltip" data-placement="top" title="Mesa3d环境编译">Next
-                            Post &rarr;</a>
-                    </li>
                     
                 </ul>
                 
