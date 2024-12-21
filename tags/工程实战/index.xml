@@ -6,10 +6,19 @@
     <description>Recent content in 工程实战 on FQ Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 21 Aug 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 21 Dec 2024 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://ywqyunshan.github.io/tags/%E5%B7%A5%E7%A8%8B%E5%AE%9E%E6%88%98/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>PC和Android使用MLC-LLM部署中小模型</title>
+      <link>https://ywqyunshan.github.io/2024/12/21/</link>
+      <pubDate>Sat, 21 Dec 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://ywqyunshan.github.io/2024/12/21/</guid>
+      <description>一 中小模型介绍 在https://huggingface.co/网站上先找了基础规模小于等于5B(十亿)参数的中小模型。 模型名称 所属机构 基础规</description>
+    </item>
     
     <item>
       <title>Mesa3d环境编译</title>
