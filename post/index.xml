@@ -6,10 +6,19 @@
     <description>Recent content in Posts on FQ Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 21 Dec 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 01 Nov 2025 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://ywqyunshan.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>谈谈整车电子电器架构和全域操作系统</title>
+      <link>https://ywqyunshan.github.io/2025/11/01/</link>
+      <pubDate>Sat, 01 Nov 2025 00:00:00 +0000</pubDate>
+      
+      <guid>https://ywqyunshan.github.io/2025/11/01/</guid>
+      <description>关于电子电器架构各种科普文章梳理就是几个概念化（分布式-&amp;gt;域控制器-&amp;gt;中央+域控制器），这个架构演进本质到底解决什么问题呢？整车</description>
+    </item>
     
     <item>
       <title>PC和Android使用MLC-LLM部署中小模型</title>
