@@ -181,7 +181,7 @@
                         
                             Posted by 
                             
-                                    &#34;iigeoywq&#34;
+                                    &#34;iigeoywq button&#34;
                              
                             on 
                             Saturday, November 1, 2025
@@ -244,17 +244,16 @@
 <p>特斯来和蔚小理都基本都绕不开这四点。Classic AutoSar 和 Adaptive AutoSar 到底是解决什么问题呢？
 还是解决软硬耦合</p>
 <ul>
-<li>Classic AutoSar本质上是对MCU芯片自下而上提供了一套
-像android系统那样的基础设施（硬件HAL抽象层/系统组件服务层/RTE/统一接口层），这样hal层和硬件解耦，上层和业务解耦；
+<li>Classic AutoSar 是对MCU上部署的freeRTOS或者nuttx内核，自下而上提供了一套像android系统那样的基础设施（硬件HAL抽象层/系统组件服务层/RTE/统一接口层），这样hal层和硬件解耦，上层和业务解耦；
 例如目前车厂使用的freertos内核和nuttx内核都没有基础设施栈。</li>
-<li>Adaptive AutoSar本质上对mpu或者soc上部署的类linux系统提供一套满足汽车业务的基础栈（例如裁剪linux系统，支持can/lin通信协议基础组件等等）。</li>
-<li>这里有个点要补充一下，对于座舱域的android系统因为在手机时代已经和硬件厂商做好了兼容，之前迁移到车机，但是对于自动驾驶强域强依赖硬件厂商（英伟达或者地平线），所以特斯来蔚小理各家也在基于类Linux系统自研基础设施栈，期望屏蔽硬件厂商的依赖，甚至都在自研自动驾驶芯片，但是效果如何，看看后续吧。</li>
-<li>在补充一点，特斯拉座舱域没用android系统，直接裁剪的linux系统。</li>
+<li>Adaptive AutoSar本质上对mpu或者soc上部署的类linux系统提供一套满足汽车业务的基础栈（例如裁剪linux系统，支持someip等通信协议基础组件）。</li>
+<li>这里有个点要补充一下，对于座舱域的android系统因为在手机时代已经和硬件厂商做好了兼容，直接迁移到车机，基本也不需要AP(Adaptive AUTOSAR),但是对于自动驾驶强域强依赖硬件厂商（英伟达或者地平线），这里我不太确定，应该会依赖AP,所以特斯来蔚小理各家也在基于类Linux系统自研基础设施栈，期望屏蔽硬件厂商的依赖，甚至在自研自动驾驶芯片，但是效果如何，看看后续吧。</li>
+<li>再补充一点，特斯拉座舱域没用android系统，直接裁剪的linux系统。</li>
 </ul>
 <p>其实各家自研操作系统优势就2点：</p>
 <ul>
 <li>取代mcu上的Classic AutoSar，并做到各种MCU芯片的软硬件解耦;</li>
-<li>在自动驾驶域可以屏蔽硬件依赖；</li>
+<li>在自动驾驶域可以屏蔽硬件依赖，取代Adaptive AUTOSAR；</li>
 </ul>
 <p>整车全域操作系统，其实特斯拉蔚小理各家大差不大，由于理想开源了自家的操作系统，就借用两张</p>
 <p>
