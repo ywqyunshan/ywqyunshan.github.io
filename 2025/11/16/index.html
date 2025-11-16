@@ -216,7 +216,7 @@
 <h2 id="1-系统架构">1 系统架构</h2>
 <p>以理想的开源为VCOS例，直接上图，就这5层架构。
 
-  <img src="/static/img/vcos%e7%b3%bb%e7%bb%9f%e6%9e%b6%e6%9e%84.png" alt="vcos系统架构">
+  <img src="/img/vcos%e7%b3%bb%e7%bb%9f%e6%9e%b6%e6%9e%84.png" alt="vcos系统架构">
 
 </p>
 <h2 id="2-系统组件">2 系统组件</h2>
@@ -237,23 +237,40 @@
 </li>
 <li>调度Event事件，映射Runnable到Task执行。
 
-  <img src="/static/img/RTE_SR.png" alt="RTE_SR">
+  <img src="/img/RTE_SR.png" alt="RTE_SR">
 
 </li>
 </ul>
 <h3 id="22-通信模块">2.2 通信模块</h3>
-<ul>
-<li>总体架构
-自下而上分四层为：网络设备驱动层（net_dev）、网络协议层（net_protocols）、PDU路由层（pdu_router）和应用层（SWC）。</li>
-</ul>
+<h4 id="221-总体架构">2.2.1 总体架构</h4>
+<p>自下而上分为六层：网络设备驱动层（net_dev）、网络协议层（net_protocols）、PDU路由层（pdu_router），网络管理（NM）和通信服务层（ComM）以及应用层（SWC）。</p>
 <p>
-  <img src="/static/img/%e7%bd%91%e7%bb%9c%e7%ae%a1%e7%90%86.png" alt="网络架构">
+  <img src="/img/rtos_NM.png" alt="网络架构">
 
 </p>
 <ul>
-<li>NM (网络管理)
-研究中&hellip;</li>
+<li>
+<p>网络设备驱动层 (net_dev)：位于最底层，负责对硬件设备进行抽象和封装。canif模块为CAN控制器提供统一的接口，屏蔽了不同硬件的差异性，向上层提供标准化的数据收发服务。eth模块则为以太网控制器提供类似的驱动抽象；</p>
+</li>
+<li>
+<p>网络协议层 (net_protocols)：主要实现以太网协议，包括、IPv4、TCP和UDP，CAN数据不走这一层。</p>
+</li>
+<li>
+<p>PDU路由层 (pdu_router)：作为通信栈的核心枢纽，PDU Router负责协议数据单元的接收、分发和转发。这一层要深入研究一下。</p>
+</li>
+<li>
+<p>网络管理层 (net_manager)：
+由cannm（CAN网络管理）和cansm（CAN状态管理）以及Ethnm等模块组成，负责实现ECU的网络管理功能，包括协调ECU的睡眠（Sleep）与唤醒（Wake-up）状态转换，确保整个网络的低功耗运行。这一块就是PNC要在研究一下。</p>
+</li>
+<li>
+<p>通信服务层（rt_com）类似AUTOSAR Com 层的承担信号处理/打包解包/通知职责。</p>
+</li>
+<li>
+<p>应用层：应用层通过上面的RTE（运行时环境）与通信栈进行交互。</p>
+</li>
 </ul>
+<h4 id="222-can通信">2.2.2 Can通信</h4>
+<h4 id="223-网络管理-nm">2.2.3 网络管理-NM</h4>
 
 
                 
