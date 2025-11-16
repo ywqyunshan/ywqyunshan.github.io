@@ -15,15 +15,15 @@
     
 
     
-    <meta name="title" content="Posts Archive" />
-    <meta property="og:title" content="Posts Archive" />
-    <meta property="twitter:title" content="Posts Archive" />
+    <meta name="title" content="实时操作系统上的标准化汽车基础软件框架" />
+    <meta property="og:title" content="实时操作系统上的标准化汽车基础软件框架" />
+    <meta property="twitter:title" content="实时操作系统上的标准化汽车基础软件框架" />
     
 
     
-    <meta name="description" content="Archive of historical posts.">
-    <meta property="og:description" content="Archive of historical posts." />
-    <meta property="twitter:description" content="Archive of historical posts." />
+    <meta name="description" content="">
+    <meta property="og:description" content="" />
+    <meta property="twitter:description" content="" />
     
 
     
@@ -34,9 +34,9 @@
     <meta name="keyword"  content="iigeoywq, button, 博客, 个人网站, 图形学, GIS, 座舱, 车载, Andorid, 系统">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>Posts Archive | </title>
+    <title>实时操作系统上的标准化汽车基础软件框架 | </title>
 
-    <link rel="canonical" href="/archive/">
+    <link rel="canonical" href="/2025/11/16/">
 
     
     
@@ -155,14 +155,41 @@
 
 
 
-<header class="intro-header" style="background-image: url('/img/home-bg-jeep.jpg')">
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/home-bg-jeep.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
-                <div class="site-heading">
-                    <h1>FQ Blog </h1>
-                    
-		    <span class="subheading"></span>
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/%E7%B3%BB%E7%BB%9F%E7%90%86%E8%AE%BA" title="系统理论">
+                            系统理论
+                        </a>
+                        
+                    </div>
+                    <h1>实时操作系统上的标准化汽车基础软件框架</h1>
+                    <h2 class="subheading">类似理想VCOS或AUTOSAR Classic Platform</h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                    &#34;iigeoywq button&#34;
+                             
+                            on 
+                            Sunday, November 16, 2025
+                            
+                            
+                            
+                            
+                    </span>
                 </div>
             </div>
         </div>
@@ -172,319 +199,190 @@
 
 
 
+<article>
+    <div class="container">
+        <div class="row">
 
-<div data-pagefind-ignore="all" class="container">
-    <div class="row">
-   	    <div class="
-            col-lg-8 col-lg-offset-1
-            col-md-8 col-md-offset-1
-            col-sm-12
-            col-xs-12
-            post-container
-        ">
-            <div class="archive-list">
-                
-                
-                    
-                    
-                        
-                            
-                            <h1 class="title is-4 has-text-weight-normal">2025</h1>
-                        
-                    
-                        
-                    
-                        
-                    
-
-                    <ul>
-                    
-                        <li>
-                            <span>11/16</span> — 
-                            <a href="/2025/11/16/">
-                                实时操作系统上的标准化汽车基础软件框架
-                            </a>
-                        </li>
-                    
-                        <li>
-                            <span>11/08</span> — 
-                            <a href="/2025/11/08/">
-                                整车通信框架
-                            </a>
-                        </li>
-                    
-                        <li>
-                            <span>11/01</span> — 
-                            <a href="/2025/11/01/">
-                                谈谈整车电子电器架构和全域操作系统
-                            </a>
-                        </li>
-                    
-                    </ul>
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
 
                 
-                
-                
-                    
-                    
-                        
-                            
-                            <h1 class="title is-4 has-text-weight-normal">2024</h1>
-                        
-                    
-                        
-                    
-                        
-                    
+                <blockquote>
+<p>蔚小理自研的RTOS操作系统，其实就是基于AUTOSAR Claasic Platform 标准，自下而上构建硬件抽象层，内核，系统组件服务，RTE， 应用层。另外RTOS没有进程，都是线程（或者叫TASK），每个模块都是一个component。</p>
+</blockquote>
+<h2 id="1-系统架构">1 系统架构</h2>
+<p>以理想的开源为VCOS例，直接上图，就这5层架构。
 
-                    <ul>
-                    
-                        <li>
-                            <span>12/21</span> — 
-                            <a href="/2024/12/21/">
-                                PC和Android使用MLC-LLM部署中小模型
-                            </a>
-                        </li>
-                    
-                        <li>
-                            <span>08/21</span> — 
-                            <a href="/2024/08/21/">
-                                Mesa3d环境编译
-                            </a>
-                        </li>
-                    
-                        <li>
-                            <span>03/02</span> — 
-                            <a href="/2024/03/02/">
-                                Android HAL层演进和实现
-                            </a>
-                        </li>
-                    
-                    </ul>
+  <img src="/static/img/vcos%e7%b3%bb%e7%bb%9f%e6%9e%b6%e6%9e%84.png" alt="vcos系统架构">
+
+</p>
+<h2 id="2-系统组件">2 系统组件</h2>
+<p>重点说两个系统组件，通信服务和RTE(任意两个component之间的通信方式)。</p>
+<h3 id="21--rte">2.1  RTE</h3>
+<p>提供任意两个模块之间的通信接口、调度管理，并根据配置生成对应的接口。</p>
+<ul>
+<li>提供2种通信方式：
+<ul>
+<li>Sender-Receiver（SR，发送者-接收者）：支持队列式与非队列式两种语义。
+<ul>
+<li>队列式：写入按序入队，接收侧逐条出队处理，常用环形缓冲或队列缓冲实现。</li>
+<li>非队列式：仅保留最新值，接收侧读取当前值，无排队。</li>
+</ul>
+</li>
+<li>Client-Server（CS，客户端-服务端）：调用接口函数，典型为同步请求-响应（也可配置异步）。</li>
+</ul>
+</li>
+<li>调度Event事件，映射Runnable到Task执行。
+
+  <img src="/static/img/RTE_SR.png" alt="RTE_SR">
+
+</li>
+</ul>
+<h3 id="22-通信模块">2.2 通信模块</h3>
+<ul>
+<li>总体架构
+自下而上分四层为：网络设备驱动层（net_dev）、网络协议层（net_protocols）、PDU路由层（pdu_router）和应用层（SWC）。</li>
+</ul>
+<p>
+  <img src="/static/img/%e7%bd%91%e7%bb%9c%e7%ae%a1%e7%90%86.png" alt="网络架构">
+
+</p>
+<ul>
+<li>NM (网络管理)
+研究中&hellip;</li>
+</ul>
+
 
                 
                 
-                
-                    
-                    
-                        
-                            
-                            <h1 class="title is-4 has-text-weight-normal">2023</h1>
-                        
-                    
-                        
-                    
-                        
-                    
-                        
-                    
-                        
-                    
-
-                    <ul>
-                    
-                        <li>
-                            <span>04/28</span> — 
-                            <a href="/2023/04/28/">
-                                基于DMA-BUF的ZERO-COPY技术
-                            </a>
-                        </li>
-                    
-                        <li>
-                            <span>03/03</span> — 
-                            <a href="/2023/03/03/">
-                                Android图形系统-窗口子系统-合成
-                            </a>
-                        </li>
-                    
-                        <li>
-                            <span>02/22</span> — 
-                            <a href="/2023/02/22/">
-                                Android图形系统-渲染子系统
-                            </a>
-                        </li>
-                    
-                        <li>
-                            <span>02/04</span> — 
-                            <a href="/2023/02/04/">
-                                Android图形系统-窗口子系统-窗口
-                            </a>
-                        </li>
-                    
-                        <li>
-                            <span>01/19</span> — 
-                            <a href="/2023/01/19/">
-                                Android图形系统-架构
-                            </a>
-                        </li>
-                    
-                    </ul>
-
-                
-                
-                
-                    
-                    
-                        
-                            
-                            <h1 class="title is-4 has-text-weight-normal">2022</h1>
-                        
-                    
-
-                    <ul>
-                    
-                        <li>
-                            <span>12/07</span> — 
-                            <a href="/2022/12/07/">
-                                计算机基础前置知识
-                            </a>
-                        </li>
-                    
-                    </ul>
-
-                
-                
-            </div>
-       	</div>
-        
-
-<div class="
-    col-lg-3 col-lg-offset-0
-    col-md-3 col-md-offset-0
-    col-sm-12
-    col-xs-12
-    sidebar-container
-">
+<div class="entry-shang text-center">
     
+	    <p>「真诚赞赏，手留余香」</p>
 	
-    <section class="visible-md visible-lg">
-	
-        <div class="short-about">
-            
-            <a href="/about">
-               <img src="/img/logo.png" alt="avatar" style="cursor: pointer" />
-            </a>
-            
-            
-                <p>Software Developer</p>
-            
-           
-           <ul class="list-inline">
-               
-               <li>
-                   <a href="mailto:youremail@gmail.com">
-                      <span class="fa-stack fa-lg">
-                          <i class="fa fa-circle fa-stack-2x"></i>
-                          <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
-                      </span>
-                   </a>
-               </li>
-               
-               
-               
-               
-               
-               
-               <li>
-                   <a target="_blank" href="/your%20wechat%20qr%20code%20image">
-                       <span class="fa-stack fa-lg">
-                           <i class="fas fa-circle fa-stack-2x"></i>
-                           <i class="fab fa-weixin fa-stack-1x fa-inverse"></i>
-                       </span>
-                   </a>
-               </li>
-               
-               
-               <li>
-                   <a target="_blank" href="https://github.com/yourgithub">
-                       <span class="fa-stack fa-lg">
-                           <i class="fas fa-circle fa-stack-2x"></i>
-                           <i class="fab fa-github fa-stack-1x fa-inverse"></i>
-                       </span>
-                   </a>
-               </li>
-               
-               
-               
-               
-               <li>
-                   <a target="_blank" href="https://www.linkedin.com/in/yourlinkedinid">
-                       <span class="fa-stack fa-lg">
-                           <i class="fas fa-circle fa-stack-2x"></i>
-                           <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
-                       </span>
-                   </a>
-               </li>
-               
-               
-               
-                    <li>
-                        <a target="_blank" href="https://stackoverflow.com/users/yourstackoverflowid">
-                            <span class="fa-stack fa-lg">
-                                <i class="fas fa-circle fa-stack-2x"></i>
-                                <i class="fab fa-stack-overflow fa-stack-1x fa-inverse"></i>
-                            </span>
-                        </a>
-                    </li>
-            
-            
-            
-               
-               
-               
-               
-                </ul>
-            </div>
-    </section>
-	
-    
-    
-    
-    
-    <section>
-        <hr class="hidden-sm hidden-xs">
-        <h5>FEATURED TAGS</h5>
-        <div class="tags">
-            
-            
-               
-                    <a href="/tags/%E5%B7%A5%E7%A8%8B%E5%AE%9E%E6%88%98" title="工程实战">
-                        工程实战
-                    </a>
-               
-            
-               
-                    <a href="/tags/%E7%B3%BB%E7%BB%9F%E7%90%86%E8%AE%BA" title="系统理论">
-                        系统理论
-                    </a>
-               
-            
-        </div>
-    </section>
-    
-
-    
-    
-    <section>
-        <hr class="hidden-sm hidden-xs">
-        <h5>FRIENDS</h5>
-        <ul class="list-inline">
-            
-            <li><a target="_blank" href="https://www.jianshu.com/u/e9dc7e422257">iigeoywq的博客</a></li>
-            
-            <li><a target="_blank" href="https://www.jianshu.com/u/978b4a822bc3">button的博客</a></li>
-            
-        </ul>
-    </section>
-    
-    
+	<button class="zs show-zs btn btn-bred">赞赏支持</button>
 </div>
-
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+	<div class="zs-modal-head">
+		<button type="button" class="close">×</button>
+		<span class="author"><a href="https://ywqyunshan.github.io/"><img src="/img/favicon.png" />FQ Blog</a></span>
+        
+	        <p class="tip"><i></i><span>真诚赞赏，手留余香</span></p>
+		
+ 
+	</div>
+	<div class="zs-modal-body">
+		<div class="zs-modal-btns">
+			<button class="btn btn-blink" data-num="2">2元</button>
+			<button class="btn btn-blink" data-num="5">5元</button>
+			<button class="btn btn-blink" data-num="10">10元</button>
+			<button class="btn btn-blink" data-num="50">50元</button>
+			<button class="btn btn-blink" data-num="100">100元</button>
+			<button class="btn btn-blink" data-num="1">任意金额</button>
+		</div>
+		<div class="zs-modal-pay">
+			<button class="btn btn-bred" id="pay-text">2元</button>
+			<p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+			<img src="/img/reward/wechat-2.png"  id="pay-image"/>
+		</div>
+	</div>
+	<div class="zs-modal-footer">
+		<label><input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked"><span ><span class="zs-wechat"><img src="/img/reward/wechat-btn.png"/></span></label>
+		<label><input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay"><img src="/img/reward/alipay-btn.png"/></span></label>
 	</div>
 </div>
+<script type="text/javascript" src="/js/reward.js"></script>
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2025/11/08/" data-toggle="tooltip" data-placement="top" title="整车通信框架">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+                
+
+                
 
 
-<hr />
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        <a href="/tags/%E5%B7%A5%E7%A8%8B%E5%AE%9E%E6%88%98" title="工程实战">
+                            工程实战
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E7%B3%BB%E7%BB%9F%E7%90%86%E8%AE%BA" title="系统理论">
+                            系统理论
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+                <section>
+                    <hr>
+                    <h5>FRIENDS</h5>
+                    <ul class="list-inline">
+                        
+                        <li><a target="_blank" href="https://www.jianshu.com/u/e9dc7e422257">iigeoywq的博客</a></li>
+                        
+                        <li><a target="_blank" href="https://www.jianshu.com/u/978b4a822bc3">button的博客</a></li>
+                        
+                    </ul>
+                </section>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
 
 
 

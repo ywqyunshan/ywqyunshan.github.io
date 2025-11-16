@@ -6,13 +6,22 @@
     <description>Recent content in Posts on FQ Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 08 Nov 2025 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 16 Nov 2025 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://ywqyunshan.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>整车通信框架-SOA</title>
+      <title>实时操作系统上的标准化汽车基础软件框架</title>
+      <link>https://ywqyunshan.github.io/2025/11/16/</link>
+      <pubDate>Sun, 16 Nov 2025 00:00:00 +0000</pubDate>
+      
+      <guid>https://ywqyunshan.github.io/2025/11/16/</guid>
+      <description>蔚小理自研的RTOS操作系统，其实就是基于AUTOSAR Claasic Platform 标准，自下而上构建硬件抽象层，内核，系统组件服务，RTE， 应用层。另外RTOS没</description>
+    </item>
+    
+    <item>
+      <title>整车通信框架</title>
       <link>https://ywqyunshan.github.io/2025/11/08/</link>
       <pubDate>Sat, 08 Nov 2025 00:00:00 +0000</pubDate>
       
